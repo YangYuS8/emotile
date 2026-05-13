@@ -30,6 +30,7 @@ export { validateExpression } from "./validate";
 export { normalizeExpression } from "./normalize";
 export { repairExpression } from "./repair";
 export { renderExpression } from "./render";
+export { renderPixelFrameToASCII } from "./preview";
 export { mutateExpression } from "./mutate";
 
 export {

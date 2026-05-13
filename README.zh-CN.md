@@ -70,6 +70,21 @@ console.log(`${frame.width}x${frame.height}, ${frame.pixels.length} 像素`);
 const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
 ```
 
+## 调试预览
+
+```ts
+import { renderPixelFrameToASCII } from "emotile";
+
+const ascii = renderPixelFrameToASCII(frame);
+console.log(ascii);
+```
+
+字符与像素颜色对应：
+- `#` = primary（主色）
+- `@` = accent（强调色）
+- `-` = shadow（阴影色）
+- ` ` = transparent（透明）
+
 ## 运行测试
 
 ```bash
