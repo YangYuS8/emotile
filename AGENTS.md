@@ -41,10 +41,13 @@ Each PR should include:
 - Summary
 - Linked issue, preferably using `Closes #issue`
 - Changes made
-- Verification commands
+- Verification commands (e.g., `pnpm typecheck`, `pnpm test`, `pnpm build`)
 - Notes for reviewer
 
 A PR should not expand the scope of the issue unless the Architect Agent explicitly agrees.
+
+If the change affects the expression format, the PR must update the spec.
+If the change affects user-facing behavior, the PR must update the README and tests.
 
 ## Builder Agent Permissions
 
@@ -61,8 +64,8 @@ The Builder Agent may:
 
 The Builder Agent must not:
 
-- Push to main
-- Merge PRs
+- Push directly to `main`
+- Merge pull requests
 - Close issues
 - Change repository settings
 - Expand issue scope without explicit Architect approval
@@ -101,7 +104,7 @@ If a quality gate cannot be run, the PR must explain why and list the residual r
 
 ## Project Principles
 
-Emotile is an expression language and runtime, not a desktop pet.
+Emotile is a platform-independent expression language and runtime, not a desktop pet or a preset expression pack.
 Do not add complete preset expressions like `happy_01`.
 Prefer composable visual primitives.
 Agent-facing input must be validated, normalized, and repairable.
