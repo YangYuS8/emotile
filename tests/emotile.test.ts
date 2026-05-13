@@ -227,6 +227,26 @@ describe("renderExpression", () => {
       }
     }
   });
+
+  it("deduplicates overlapping pixels with last-write-wins", () => {
+    // Place a mark directly on top of the left eye so they overlap
+    const expression = {
+      ...VALID_EXPRESSION,
+      marks: [
+        {
+          type: "heart",
+          x: VALID_EXPRESSION.eyes.left.x,
+          y: VALID_EXPRESSION.eyes.left.y,
+          intensity: 1.0,
+        },
+      ],
+    };
+    const frame = renderExpression(expression);
+    const dupes = frame.pixels.filter(
+      (p) => frame.pixels.filter((q) => q.x === p.x && q.y === p.y).length > 1,
+    );
+    expect(dupes.length).toBe(0);
+  });
 });
 
 describe("mutateExpression", () => {

@@ -180,6 +180,7 @@ Repair is designed for inputs from LLMs / agents that may produce partially inva
 4. No browser, canvas, or GPU dependency.
 5. v0.1 supports: dot, line, arc, closed, cross, star, hollow, spiral eyes; all 8 mouth shapes; all 8 mark types.
 6. Pixels outside canvas bounds are clipped.
+7. When multiple primitives emit pixels at the same coordinate, the renderer uses **last-write-wins**: the last primitive rendered at that coordinate determines the final color. The render order is eyes → mouth → brows → marks.
 
 ## 10. Why Visual Primitives, Not Predefined Expressions
 
