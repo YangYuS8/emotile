@@ -93,7 +93,7 @@ frame.pixels.forEach((p) => {
 
 ## Current Limitations
 
-- Canvas only supports 32×32 in practice (type allows up to 256×256).
+- v0.1 canvas is fixed at 32×32.
 - Renderer produces a pixel list, not PNG/GIF/SVG — downstream consumers must convert.
 - No animation support yet (motion fields are defined but not animated).
 - No theme / color palette support (colors are semantic: `primary`, `accent`, `shadow`).

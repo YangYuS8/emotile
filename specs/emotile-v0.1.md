@@ -42,10 +42,7 @@ An Emotile expression is a JSON object with the following fields:
 
 ### 4.2 canvas
 
-| Field  | Type   | Default | Range   |
-|--------|--------|---------|---------|
-| width  | number | 32      | 1–256   |
-| height | number | 32      | 1–256   |
+v0.1 uses a **fixed 32×32 canvas**. The `canvas` field is required for forward compatibility, but `width` and `height` must both be `32`. Values other than `32` are treated as invalid by the validator and clamped to `32` by the normalizer and repair modules.
 
 ### 4.3 face
 

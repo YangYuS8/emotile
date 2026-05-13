@@ -66,12 +66,37 @@ describe("validateExpression", () => {
     const result = validateExpression(noVersion);
     expect(result.ok).toBe(false);
   });
+
+  it("rejects non-32 canvas size", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      canvas: { width: 64, height: 64 },
+    };
+    const result = validateExpression(input);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      const widthError = result.errors.find((e) => e.path === "canvas.width");
+      const heightError = result.errors.find((e) => e.path === "canvas.height");
+      expect(widthError).toBeDefined();
+      expect(heightError).toBeDefined();
+    }
+  });
 });
 
 describe("normalizeExpression", () => {
   it("fills default canvas when missing", () => {
     const { canvas, ...rest } = VALID_EXPRESSION;
     const normalized = normalizeExpression(rest);
+    expect(normalized.canvas.width).toBe(32);
+    expect(normalized.canvas.height).toBe(32);
+  });
+
+  it("clamps canvas to 32x32", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      canvas: { width: 64, height: 16 },
+    };
+    const normalized = normalizeExpression(input);
     expect(normalized.canvas.width).toBe(32);
     expect(normalized.canvas.height).toBe(32);
   });
@@ -144,6 +169,18 @@ describe("repairExpression", () => {
     expect(value.version).toBe("0.1");
     expect(value.eyes.left.shape).toBe("dot");
     expect(value.mouth.shape).toBe("flat");
+  });
+
+  it("repairs non-32 canvas to 32x32 with warnings", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      canvas: { width: 64, height: 16 },
+    };
+    const { value, warnings } = repairExpression(input);
+    expect(value.canvas.width).toBe(32);
+    expect(value.canvas.height).toBe(32);
+    expect(warnings.some((w) => w.path === "canvas.width")).toBe(true);
+    expect(warnings.some((w) => w.path === "canvas.height")).toBe(true);
   });
 });
 
