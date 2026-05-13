@@ -4,6 +4,13 @@
   "description": "A pixel expression language and runtime for AI agents",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -22,6 +29,14 @@
     "avatar"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YangYuS8/emotile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YangYuS8/emotile/issues"
+  },
+  "homepage": "https://github.com/YangYuS8/emotile#readme",
   "devDependencies": {
     "typescript": "^5.7.0",
     "vitest": "^3.0.5"
