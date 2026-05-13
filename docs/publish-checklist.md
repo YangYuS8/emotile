@@ -19,6 +19,11 @@ Use this checklist before publishing a new version to npm.
   - `main`, `types`, `exports`
   - `repository`, `bugs`, `homepage`
   - `license`, `keywords`, `files`
+- [ ] Module format is intentional and documented:
+  - v0.1 is **CommonJS-only** (`"type": "commonjs"`, `tsconfig.json` `"module": "commonjs"`).
+  - `exports` does not claim ESM-only (`import`) pointing to a CJS artifact.
+  - `exports.default` is used for universal fallback.
+  - Smoke-tested with both `require()` and `import` in Node.js.
 - [ ] README reflects current version and API.
 - [ ] No unintentional changes to public API.
 

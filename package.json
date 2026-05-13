@@ -4,11 +4,12 @@
   "description": "A pixel expression language and runtime for AI agents",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "commonjs",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "files": [
