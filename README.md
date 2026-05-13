@@ -104,7 +104,7 @@ frame.pixels.forEach((p) => {
 - **v0.2**: Theme support (color palettes), PNG/SVG export, animation tick.
 - **v0.3**: Terminal renderer (braille/unicode), Godot integration.
 - **v0.4**: Agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
-- **v1.0**: Stable spec, npm package, full animation runtime.
+- **v1.0**: Stable spec, full animation runtime.
 
 ## License
 
