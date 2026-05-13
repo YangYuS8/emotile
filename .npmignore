@@ -1,0 +1,8 @@
+src/
+tests/
+examples/
+specs/
+*.tsbuildinfo
+tsconfig.json
+.gitignore
+.npmignore

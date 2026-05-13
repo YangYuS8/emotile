@@ -5,6 +5,10 @@ import { repairExpression } from "../src/repair";
 import { renderExpression } from "../src/render";
 import { mutateExpression } from "../src/mutate";
 import type { EmotileExpression } from "../src/types";
+import confused from "../examples/confused.json";
+import shy from "../examples/shy.json";
+import proud from "../examples/proud.json";
+import errorButTrying from "../examples/error-but-trying.json";
 
 const VALID_EXPRESSION: EmotileExpression = {
   version: "0.1",
@@ -246,5 +250,126 @@ describe("mutateExpression", () => {
     // Eyes should be near original positions
     expect(Math.abs(mutated.eyes.left.x - VALID_EXPRESSION.eyes.left.x)).toBeLessThanOrEqual(1);
     expect(Math.abs(mutated.eyes.left.y - VALID_EXPRESSION.eyes.left.y)).toBeLessThanOrEqual(1);
+  });
+});
+
+describe("example expressions", () => {
+  const examples: [string, unknown][] = [
+    ["confused", confused],
+    ["shy", shy],
+    ["proud", proud],
+    ["error-but-trying", errorButTrying],
+  ];
+
+  for (const [name, data] of examples) {
+    describe(name, () => {
+      it("passes validateExpression", () => {
+        const result = validateExpression(data);
+        expect(result.ok).toBe(true);
+      });
+
+      it("normalizes without error", () => {
+        const normalized = normalizeExpression(data);
+        expect(normalized.version).toBe("0.1");
+      });
+
+      it("renders a pixel frame", () => {
+        const normalized = normalizeExpression(data);
+        const frame = renderExpression(normalized);
+        expect(frame.pixels.length).toBeGreaterThan(0);
+      });
+    });
+  }
+});
+
+describe("normalizeExpression — enum hardening", () => {
+  it("falls back to default for invalid eye shape", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      eyes: {
+        left: { shape: "wink", x: 10, y: 12, size: 3, openness: 1 },
+        right: { shape: "dot", x: 21, y: 12, size: 3, openness: 1 },
+      },
+    };
+    const normalized = normalizeExpression(input);
+    expect(normalized.eyes.left.shape).toBe("dot");
+  });
+
+  it("falls back to default for invalid face shape", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      face: { shape: "triangle", tilt: 0, squash: 0 },
+    };
+    const normalized = normalizeExpression(input);
+    expect(normalized.face.shape).toBe("none");
+  });
+
+  it("falls back to default for invalid mouth shape", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      mouth: { shape: "grin", x: 16, y: 22, width: 6, curve: 0 },
+    };
+    const normalized = normalizeExpression(input);
+    expect(normalized.mouth.shape).toBe("flat");
+  });
+
+  it("filters non-object elements in marks array", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      marks: [
+        { type: "sweat", x: 25, y: 8, intensity: 0.7 },
+        null,
+        42,
+        "invalid",
+        { type: "heart", x: 6, y: 6, intensity: 0.5 },
+      ],
+    };
+    const normalized = normalizeExpression(input);
+    expect(normalized.marks).toHaveLength(2);
+    expect(normalized.marks![0].type).toBe("sweat");
+    expect(normalized.marks![1].type).toBe("heart");
+  });
+
+  it("falls back to sweat for invalid mark type", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      marks: [{ type: "rainbow", x: 10, y: 10, intensity: 0.5 }],
+    };
+    const normalized = normalizeExpression(input);
+    expect(normalized.marks![0].type).toBe("sweat");
+  });
+});
+
+describe("repairExpression — hardened output", () => {
+  it("output always passes validateExpression", () => {
+    const malformed = {
+      version: "2.0",
+      face: { shape: "triangle", tilt: 99, squash: 5 },
+      eyes: {
+        left: { shape: "wink", x: -5, y: 50, size: 99, openness: 2 },
+        right: "broken",
+      },
+      mouth: { shape: "grin", x: -1, y: -1, width: 0, curve: 5 },
+      marks: [null, 42, { type: "rainbow", x: -5, y: 99, intensity: 2 }],
+    };
+    const { value } = repairExpression(malformed);
+    const result = validateExpression(value);
+    expect(result.ok).toBe(true);
+  });
+
+  it("skips non-object elements in marks array", () => {
+    const input = {
+      ...VALID_EXPRESSION,
+      marks: [
+        { type: "sweat", x: 25, y: 8, intensity: 0.7 },
+        null,
+        42,
+        { type: "heart", x: 6, y: 6, intensity: 0.5 },
+      ],
+    };
+    const { value, warnings } = repairExpression(input);
+    expect(value.marks).toHaveLength(2);
+    expect(warnings.some((w) => w.path.includes("marks[1]"))).toBe(true);
+    expect(warnings.some((w) => w.path.includes("marks[2]"))).toBe(true);
   });
 });

@@ -97,7 +97,9 @@ function repairEye(
     openness: typeof src.openness === "number"
       ? clampWithWarning(path + ".openness", src.openness, RANGE.eyeOpenness.min, RANGE.eyeOpenness.max, warnings)
       : fallback.openness,
-    ...(typeof src.angle === "number" ? { angle: src.angle } : fallback.angle !== undefined ? { angle: fallback.angle } : {}),
+    ...(typeof src.angle === "number"
+      ? { angle: clampWithWarning(path + ".angle", src.angle, -180, 180, warnings) }
+      : fallback.angle !== undefined ? { angle: fallback.angle } : {}),
   };
 }
 
@@ -274,7 +276,12 @@ export function repairExpression(input: unknown): RepairResult {
   let marks: EmotileExpression["marks"] = undefined;
   if (Array.isArray(src.marks)) {
     const repaired: EmotileExpression["marks"] = [];
-    (src.marks as Record<string, unknown>[]).forEach((m, i) => {
+    (src.marks as unknown[]).forEach((raw, i) => {
+      if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+        warnings.push({ path: `marks[${i}]`, message: "skipped non-object mark element" });
+        return;
+      }
+      const m = raw as Record<string, unknown>;
       const markType = repairEnum(`marks[${i}].type`, m.type, MARK_TYPE_SET, "sweat", warnings) as MarkType;
       repaired.push({
         type: markType,
