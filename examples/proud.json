@@ -1,0 +1,20 @@
+{
+  "version": "0.1",
+  "canvas": { "width": 32, "height": 32 },
+  "face": { "shape": "none", "tilt": 5, "squash": 0.1 },
+  "eyes": {
+    "left": { "shape": "dot", "x": 10, "y": 12, "size": 3, "openness": 0.9 },
+    "right": { "shape": "dot", "x": 21, "y": 12, "size": 3, "openness": 0.9 }
+  },
+  "mouth": { "shape": "smile", "x": 16, "y": 21, "width": 8, "curve": 0.6 },
+  "brows": {
+    "left": { "angle": -5, "y": 8, "length": 5 },
+    "right": { "angle": 5, "y": 8, "length": 5 }
+  },
+  "marks": [
+    { "type": "sparkle", "x": 6, "y": 6, "intensity": 0.8 },
+    { "type": "sparkle", "x": 26, "y": 8, "intensity": 0.6 }
+  ],
+  "motion": { "blink": 0.05, "jitter": 0.04, "breath": 0.15, "shake": 0, "glitch": 0 },
+  "mutation": { "asymmetry": 0.08, "randomness": 0.03, "glitch": 0 }
+}
