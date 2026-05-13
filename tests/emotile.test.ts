@@ -1,14 +1,12 @@
 import { describe, it, expect } from "vitest";
+import fs from "fs";
+import path from "path";
 import { validateExpression } from "../src/validate";
 import { normalizeExpression } from "../src/normalize";
 import { repairExpression } from "../src/repair";
 import { renderExpression } from "../src/render";
 import { mutateExpression } from "../src/mutate";
 import type { EmotileExpression } from "../src/types";
-import confused from "../examples/confused.json";
-import shy from "../examples/shy.json";
-import proud from "../examples/proud.json";
-import errorButTrying from "../examples/error-but-trying.json";
 
 const VALID_EXPRESSION: EmotileExpression = {
   version: "0.1",
@@ -44,7 +42,7 @@ describe("validateExpression", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       const eyeError = result.errors.find((e) =>
-        e.path.includes("eyes.left.shape")
+        e.path.includes("eyes.left.shape"),
       );
       expect(eyeError).toBeDefined();
     }
@@ -183,7 +181,16 @@ describe("renderExpression", () => {
   });
 
   it("renders different eye shapes", () => {
-    const shapes = ["dot", "line", "arc", "closed", "cross", "star", "hollow", "spiral"] as const;
+    const shapes = [
+      "dot",
+      "line",
+      "arc",
+      "closed",
+      "cross",
+      "star",
+      "hollow",
+      "spiral",
+    ] as const;
     for (const shape of shapes) {
       const expression = {
         ...VALID_EXPRESSION,
@@ -198,7 +205,16 @@ describe("renderExpression", () => {
   });
 
   it("renders different mouth shapes", () => {
-    const shapes = ["flat", "smile", "sad", "open", "wave", "broken", "tiny_o", "hidden"] as const;
+    const shapes = [
+      "flat",
+      "smile",
+      "sad",
+      "open",
+      "wave",
+      "broken",
+      "tiny_o",
+      "hidden",
+    ] as const;
     for (const shape of shapes) {
       const expression = {
         ...VALID_EXPRESSION,
@@ -248,18 +264,26 @@ describe("mutateExpression", () => {
       amount: 0.1,
     });
     // Eyes should be near original positions
-    expect(Math.abs(mutated.eyes.left.x - VALID_EXPRESSION.eyes.left.x)).toBeLessThanOrEqual(1);
-    expect(Math.abs(mutated.eyes.left.y - VALID_EXPRESSION.eyes.left.y)).toBeLessThanOrEqual(1);
+    expect(
+      Math.abs(mutated.eyes.left.x - VALID_EXPRESSION.eyes.left.x),
+    ).toBeLessThanOrEqual(1);
+    expect(
+      Math.abs(mutated.eyes.left.y - VALID_EXPRESSION.eyes.left.y),
+    ).toBeLessThanOrEqual(1);
   });
 });
 
 describe("example expressions", () => {
-  const examples: [string, unknown][] = [
-    ["confused", confused],
-    ["shy", shy],
-    ["proud", proud],
-    ["error-but-trying", errorButTrying],
-  ];
+  const examplesDir = path.join(__dirname, "../examples");
+  const exampleFiles = fs
+    .readdirSync(examplesDir)
+    .filter((f) => f.endsWith(".json"));
+
+  const examples: [string, unknown][] = exampleFiles.map((file) => {
+    const filePath = path.join(examplesDir, file);
+    const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    return [path.basename(file, ".json"), data];
+  });
 
   for (const [name, data] of examples) {
     describe(name, () => {
