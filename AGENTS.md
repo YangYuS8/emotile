@@ -88,6 +88,27 @@ The Architect Agent may:
 
 The Architect Agent should avoid writing implementation code unless the change is trivial.
 
+## Same-Account Review Fallback
+
+When the Architect Agent and Builder Agent share the same GitHub account, GitHub does not allow formal "approve" or "request changes" reviews on the account's own pull requests. In this scenario:
+
+- **Preferred:** Use GitHub's formal review UI whenever available (separate accounts, bot integrations, etc.).
+- **Fallback:** The Architect Agent leaves a top-level PR comment titled `## Architect Review Note` before merging or blocking.
+
+### Architect Review Note Template
+
+```markdown
+## Architect Review Note
+
+- **Decision:** approve | block
+- **Linked issue:** #<issue>
+- **Scope check:** <in scope / out of scope notes>
+- **Verification:** <commands or CI checks reviewed>
+- **Notes:** <risks, follow-ups, or reason for blocking>
+```
+
+This comment serves as the review record and should be referenced if the decision is questioned later.
+
 ## Quality Gate
 
 Before a PR is accepted, it should pass:
