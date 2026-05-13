@@ -70,6 +70,21 @@ console.log(`${frame.width}x${frame.height}, ${frame.pixels.length} pixels`);
 const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
 ```
 
+## Debug Preview
+
+```ts
+import { renderPixelFrameToASCII } from "emotile";
+
+const ascii = renderPixelFrameToASCII(frame);
+console.log(ascii);
+```
+
+Characters map to pixel colors:
+- `#` = primary
+- `@` = accent
+- `-` = shadow
+- ` ` = transparent
+
 ## Run Tests
 
 ```bash

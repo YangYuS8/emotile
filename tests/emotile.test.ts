@@ -6,6 +6,7 @@ import { normalizeExpression } from "../src/normalize";
 import { repairExpression } from "../src/repair";
 import { renderExpression } from "../src/render";
 import { mutateExpression } from "../src/mutate";
+import { renderPixelFrameToASCII } from "../src/preview";
 import type { EmotileExpression } from "../src/types";
 
 const VALID_EXPRESSION: EmotileExpression = {
@@ -432,5 +433,38 @@ describe("repairExpression — hardened output", () => {
     expect(value.marks).toHaveLength(2);
     expect(warnings.some((w) => w.path.includes("marks[1]"))).toBe(true);
     expect(warnings.some((w) => w.path.includes("marks[2]"))).toBe(true);
+  });
+});
+
+describe("renderPixelFrameToASCII", () => {
+  it("renders a 3x3 frame with correct characters", () => {
+    const frame = {
+      width: 3,
+      height: 3,
+      pixels: [
+        { x: 0, y: 0, color: "primary" as const },
+        { x: 1, y: 1, color: "accent" as const },
+        { x: 2, y: 2, color: "shadow" as const },
+      ],
+    };
+    const ascii = renderPixelFrameToASCII(frame);
+    const lines = ascii.split("\n");
+    expect(lines).toHaveLength(3);
+    expect(lines[0]).toBe("#  ");
+    expect(lines[1]).toBe(" @ ");
+    expect(lines[2]).toBe("  -");
+  });
+
+  it("returns empty lines for an empty frame", () => {
+    const frame = { width: 2, height: 2, pixels: [] };
+    const ascii = renderPixelFrameToASCII(frame);
+    expect(ascii).toBe("  \n  ");
+  });
+
+  it("produces output for a rendered expression", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const ascii = renderPixelFrameToASCII(frame);
+    expect(ascii.length).toBeGreaterThan(0);
+    expect(ascii.split("\n").length).toBe(frame.height);
   });
 });
