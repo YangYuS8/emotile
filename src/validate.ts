@@ -36,7 +36,7 @@ function validateRange(
   min: number,
   max: number,
   errors: ValidationError[],
-  required = true
+  required = true,
 ): void {
   if (value === undefined || value === null) {
     if (required) errors.push({ path, message: "is required" });
@@ -59,7 +59,7 @@ function validateEnum(
   value: unknown,
   validSet: Set<string>,
   label: string,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (value === undefined || value === null) {
     errors.push({ path, message: "is required" });
@@ -76,7 +76,7 @@ function validateEnum(
 function validateEye(
   path: string,
   eye: unknown,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (!isObject(eye)) {
     errors.push({ path, message: "must be an object" });
@@ -90,14 +90,14 @@ function validateEye(
     eye.size,
     RANGE.eyeSize.min,
     RANGE.eyeSize.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".openness",
     eye.openness,
     RANGE.eyeOpenness.min,
     RANGE.eyeOpenness.max,
-    errors
+    errors,
   );
   if (eye.angle !== undefined && eye.angle !== null) {
     validateRange(path + ".angle", eye.angle, -180, 180, errors, false);
@@ -107,7 +107,7 @@ function validateEye(
 function validateBrow(
   path: string,
   brow: unknown,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (!isObject(brow)) {
     errors.push({ path, message: "must be an object" });
@@ -123,19 +123,13 @@ function validateBrow(
 function validateMark(
   path: string,
   mark: unknown,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (!isObject(mark)) {
     errors.push({ path, message: "must be an object" });
     return;
   }
-  validateEnum(
-    path + ".type",
-    mark.type,
-    MARK_TYPE_SET,
-    "MarkType",
-    errors
-  );
+  validateEnum(path + ".type", mark.type, MARK_TYPE_SET, "MarkType", errors);
   validateRange(path + ".x", mark.x, 0, 31, errors);
   validateRange(path + ".y", mark.y, 0, 31, errors);
   validateRange(
@@ -143,14 +137,14 @@ function validateMark(
     mark.intensity,
     RANGE.markIntensity.min,
     RANGE.markIntensity.max,
-    errors
+    errors,
   );
 }
 
 function validateMotion(
   path: string,
   motion: unknown,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (!isObject(motion)) {
     errors.push({ path, message: "must be an object" });
@@ -161,42 +155,42 @@ function validateMotion(
     motion.blink,
     RANGE.motionField.min,
     RANGE.motionField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".jitter",
     motion.jitter,
     RANGE.motionField.min,
     RANGE.motionField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".breath",
     motion.breath,
     RANGE.motionField.min,
     RANGE.motionField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".shake",
     motion.shake,
     RANGE.motionField.min,
     RANGE.motionField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".glitch",
     motion.glitch,
     RANGE.motionField.min,
     RANGE.motionField.max,
-    errors
+    errors,
   );
 }
 
 function validateMutation(
   path: string,
   mutation: unknown,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): void {
   if (!isObject(mutation)) {
     errors.push({ path, message: "must be an object" });
@@ -207,26 +201,26 @@ function validateMutation(
     mutation.asymmetry,
     RANGE.mutationField.min,
     RANGE.mutationField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".randomness",
     mutation.randomness,
     RANGE.mutationField.min,
     RANGE.mutationField.max,
-    errors
+    errors,
   );
   validateRange(
     path + ".glitch",
     mutation.glitch,
     RANGE.mutationField.min,
     RANGE.mutationField.max,
-    errors
+    errors,
   );
 }
 
 export function validateExpression(
-  input: unknown
+  input: unknown,
 ): ValidationResult<EmotileExpression> {
   const errors: ValidationError[] = [];
 
@@ -246,8 +240,8 @@ export function validateExpression(
   if (!isObject(input.canvas)) {
     errors.push({ path: "canvas", message: "must be an object" });
   } else {
-    validateRange("canvas.width", input.canvas.width, 1, 256, errors);
-    validateRange("canvas.height", input.canvas.height, 1, 256, errors);
+    validateRange("canvas.width", input.canvas.width, 32, 32, errors);
+    validateRange("canvas.height", input.canvas.height, 32, 32, errors);
   }
 
   // face
@@ -259,21 +253,21 @@ export function validateExpression(
       input.face.shape,
       FACE_SHAPE_SET,
       "FaceShape",
-      errors
+      errors,
     );
     validateRange(
       "face.tilt",
       input.face.tilt,
       RANGE.faceTilt.min,
       RANGE.faceTilt.max,
-      errors
+      errors,
     );
     validateRange(
       "face.squash",
       input.face.squash,
       RANGE.faceSquash.min,
       RANGE.faceSquash.max,
-      errors
+      errors,
     );
   }
 
@@ -302,7 +296,7 @@ export function validateExpression(
       input.mouth.shape,
       MOUTH_SHAPE_SET,
       "MouthShape",
-      errors
+      errors,
     );
     validateRange("mouth.x", input.mouth.x, 0, 31, errors);
     validateRange("mouth.y", input.mouth.y, 0, 31, errors);
@@ -311,14 +305,14 @@ export function validateExpression(
       input.mouth.width,
       RANGE.mouthWidth.min,
       RANGE.mouthWidth.max,
-      errors
+      errors,
     );
     validateRange(
       "mouth.curve",
       input.mouth.curve,
       RANGE.mouthCurve.min,
       RANGE.mouthCurve.max,
-      errors
+      errors,
     );
   }
 
