@@ -6,7 +6,7 @@ Instead of choosing from predefined emoji, stickers, or Live2D motions, an agent
 
 The runtime validates, repairs, normalizes, and renders the expression into a tiny pixel face.
 
-[中文文档](README.zh-CN.md)
+[中文文档](README.zh-CN.md) | [Documentation Site](https://yangyus8.github.io/emotile/)
 
 ## Why Not Predefined Emoji Packs?
 
