@@ -46,7 +46,7 @@ import {
   repairExpression,
   renderExpression,
   mutateExpression,
-} from "emotile";
+} from "@yangyus8/emotile";
 
 // 校验 — 检查表达式是否结构合法
 const result = validateExpression(input);
@@ -73,7 +73,7 @@ const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
 ## 调试预览
 
 ```ts
-import { renderPixelFrameToASCII } from "emotile";
+import { renderPixelFrameToASCII } from "@yangyus8/emotile";
 
 const ascii = renderPixelFrameToASCII(frame);
 console.log(ascii);
@@ -95,7 +95,7 @@ pnpm test
 ## 渲染示例
 
 ```ts
-import { normalizeExpression, renderExpression } from "emotile";
+import { normalizeExpression, renderExpression } from "@yangyus8/emotile";
 import confused from "./examples/confused.json";
 
 const normalized = normalizeExpression(confused);
