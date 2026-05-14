@@ -46,7 +46,7 @@ import {
   repairExpression,
   renderExpression,
   mutateExpression,
-} from "emotile";
+} from "@yangyus8/emotile";
 
 // Validate — check if an expression is structurally valid
 const result = validateExpression(input);
@@ -73,7 +73,7 @@ const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
 ## Debug Preview
 
 ```ts
-import { renderPixelFrameToASCII } from "emotile";
+import { renderPixelFrameToASCII } from "@yangyus8/emotile";
 
 const ascii = renderPixelFrameToASCII(frame);
 console.log(ascii);
@@ -95,7 +95,7 @@ pnpm test
 ## Render Examples
 
 ```ts
-import { normalizeExpression, renderExpression } from "emotile";
+import { normalizeExpression, renderExpression } from "@yangyus8/emotile";
 import confused from "./examples/confused.json";
 
 const normalized = normalizeExpression(confused);

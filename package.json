@@ -1,5 +1,5 @@
 {
-  "name": "emotile",
+  "name": "@yangyus8/emotile",
   "version": "0.1.0",
   "description": "A pixel expression language and runtime for AI agents",
   "main": "dist/index.js",
