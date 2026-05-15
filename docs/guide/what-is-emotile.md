@@ -12,7 +12,7 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 
 ## Current Stage
 
-**v0.1** — minimal viable library. Validates, normalizes, repairs, renders, and mutates expressions as pure data.
+**v0.2** — animation tick API, agent helpers, and generation guidance. Validates, normalizes, repairs, renders, mutates, and animates expressions as pure data.
 
 ## Key Capabilities
 
@@ -21,4 +21,7 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 - **Repair** — fix invalid shapes, clamp values, report warnings
 - **Render** — produce a pixel frame (pure data, no canvas dependency)
 - **Mutate** — deterministic, seed-based variation
+- **Tick** — apply motion fields deterministically using explicit tick input
+- **Build** — construct valid expressions from high-level semantic options
 - **Preview** — ASCII debug output for terminal inspection
+- **Guide** — agent-facing constraints, minimal templates, and common mistakes reference

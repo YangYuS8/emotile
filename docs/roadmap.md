@@ -9,11 +9,12 @@
 - CommonJS package
 - Fixed 32×32 canvas
 
-## v0.2 (Release Candidate Prep)
+## v0.2 (Release Candidate)
 
 - Theme and palette support (design proposal)
 - Pure-data animation tick API
 - Agent-facing expression helper docs
+- Agent guidance and common mistakes reference
 
 ## Deferred
 
