@@ -197,3 +197,29 @@ Giving an agent direct pixel-level control would:
 - Eliminate the repair pathway — you can't meaningfully "fix" an arbitrary pixel matrix.
 
 Emotile's constrained grammar is the right tradeoff: agents get enough flexibility to express nuanced states, but the output is always structurally valid and renderable.
+
+## 12. Animation Tick (v0.2)
+
+`tickExpression(expression, tick)` applies motion fields deterministically using an explicit integer tick counter. It is a pure function — no timers, no browser APIs, no side effects.
+
+Motion fields active in v0.2:
+
+| Field | Range | Behavior |
+|-------|-------|----------|
+| `blink` | 0–1 | Periodic eye closure. Higher = more frequent / longer blinks. |
+| `breath` | 0–1 | Sine-wave squash and vertical mouth shift. |
+| `shake` | 0–1 | Sine/cosine offset applied to eyes and mouth. |
+| `jitter` | 0–1 | Deterministic random micro-movements per tick. |
+| `glitch` | 0–1 | Occasional deterministic random shape swaps. |
+
+The returned expression is always valid and can be passed directly to `renderExpression`.
+
+## 13. Agent Helpers (v0.2)
+
+`buildExpression(options)` constructs a valid, normalized expression from high-level semantic options. It is deterministic and clamps all values automatically.
+
+`MINIMAL_EXPRESSION` provides a copy-paste-safe starting template.
+
+`AGENT_GUIDANCE` documents recommended safe ranges and common mistakes.
+
+`COMMON_AGENT_MISTAKES` lists frequent generation errors and how `repairExpression` fixes them.

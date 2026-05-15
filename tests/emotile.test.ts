@@ -7,6 +7,13 @@ import { repairExpression } from "../src/repair";
 import { renderExpression } from "../src/render";
 import { mutateExpression } from "../src/mutate";
 import { renderPixelFrameToASCII } from "../src/preview";
+import { tickExpression } from "../src/tick";
+import {
+  AGENT_GUIDANCE,
+  MINIMAL_EXPRESSION,
+  COMMON_AGENT_MISTAKES,
+  buildExpression,
+} from "../src/agent";
 import type { EmotileExpression } from "../src/types";
 
 const VALID_EXPRESSION: EmotileExpression = {
@@ -486,5 +493,176 @@ describe("renderPixelFrameToASCII", () => {
     const ascii = renderPixelFrameToASCII(frame);
     expect(ascii.length).toBeGreaterThan(0);
     expect(ascii.split("\n").length).toBe(frame.height);
+  });
+});
+
+describe("tickExpression", () => {
+  it("is deterministic: same tick gives same output", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 0.5, jitter: 0.3, breath: 0.4, shake: 0.2, glitch: 0.1 },
+    };
+    const a = tickExpression(expr, 5);
+    const b = tickExpression(expr, 5);
+    expect(a).toEqual(b);
+  });
+
+  it("returns different output for different ticks", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 0.5, jitter: 0.3, breath: 0.4, shake: 0.2, glitch: 0.1 },
+    };
+    const a = tickExpression(expr, 3);
+    const b = tickExpression(expr, 7);
+    // At least one field should differ due to deterministic random/shake
+    const same =
+      a.eyes.left.x === b.eyes.left.x &&
+      a.eyes.left.y === b.eyes.left.y &&
+      a.mouth.x === b.mouth.x &&
+      a.mouth.y === b.mouth.y;
+    expect(same).toBe(false);
+  });
+
+  it("output is still a valid expression", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 1, jitter: 1, breath: 1, shake: 1, glitch: 1 },
+    };
+    const ticked = tickExpression(expr, 10);
+    const result = validateExpression(ticked);
+    expect(result.ok).toBe(true);
+  });
+
+  it("output can be rendered", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 0.8, jitter: 0.5, breath: 0.6, shake: 0.3, glitch: 0 },
+    };
+    const ticked = tickExpression(expr, 2);
+    const frame = renderExpression(ticked);
+    expect(frame.width).toBe(32);
+    expect(frame.height).toBe(32);
+    expect(frame.pixels.length).toBeGreaterThan(0);
+  });
+
+  it("handles zero motion gracefully", () => {
+    const ticked = tickExpression(VALID_EXPRESSION, 0);
+    const result = validateExpression(ticked);
+    expect(result.ok).toBe(true);
+  });
+
+  it("treats negative tick as 0", () => {
+    const a = tickExpression(VALID_EXPRESSION, -5);
+    const b = tickExpression(VALID_EXPRESSION, 0);
+    expect(a).toEqual(b);
+  });
+
+  it("treats NaN tick as 0", () => {
+    const a = tickExpression(VALID_EXPRESSION, NaN);
+    const b = tickExpression(VALID_EXPRESSION, 0);
+    expect(a).toEqual(b);
+  });
+
+  it("blink reduces eye openness during blink phase", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 1, jitter: 0, breath: 0, shake: 0, glitch: 0 },
+    };
+    const ticked = tickExpression(expr, 0);
+    // Tick 0 is in blink close phase with blink=1
+    expect(ticked.eyes.left.openness).toBeLessThan(1);
+    expect(ticked.eyes.right.openness).toBeLessThan(1);
+  });
+
+  it("shake offsets positions within bounds", () => {
+    const expr = {
+      ...VALID_EXPRESSION,
+      motion: { blink: 0, jitter: 0, breath: 0, shake: 1, glitch: 0 },
+    };
+    const ticked = tickExpression(expr, 1);
+    expect(ticked.eyes.left.x).toBeGreaterThanOrEqual(0);
+    expect(ticked.eyes.left.x).toBeLessThanOrEqual(31);
+    expect(ticked.eyes.left.y).toBeGreaterThanOrEqual(0);
+    expect(ticked.eyes.left.y).toBeLessThanOrEqual(31);
+    expect(ticked.mouth.x).toBeGreaterThanOrEqual(0);
+    expect(ticked.mouth.x).toBeLessThanOrEqual(31);
+  });
+});
+
+describe("agent helpers", () => {
+  it("MINIMAL_EXPRESSION validates", () => {
+    const result = validateExpression(MINIMAL_EXPRESSION);
+    expect(result.ok).toBe(true);
+  });
+
+  it("MINIMAL_EXPRESSION renders", () => {
+    const frame = renderExpression(MINIMAL_EXPRESSION);
+    expect(frame.pixels.length).toBeGreaterThan(0);
+  });
+
+  it("buildExpression produces a valid expression with defaults", () => {
+    const expr = buildExpression();
+    const result = validateExpression(expr);
+    expect(result.ok).toBe(true);
+    expect(expr.eyes.left.shape).toBe("dot");
+    expect(expr.mouth.shape).toBe("flat");
+  });
+
+  it("buildExpression applies options", () => {
+    const expr = buildExpression({
+      eyeShape: "arc",
+      mouthShape: "smile",
+      curve: 0.5,
+      marks: ["heart"],
+      motion: { blink: 0.3 },
+    });
+    const result = validateExpression(expr);
+    expect(result.ok).toBe(true);
+    expect(expr.eyes.left.shape).toBe("arc");
+    expect(expr.eyes.right.shape).toBe("arc");
+    expect(expr.mouth.shape).toBe("smile");
+    expect(expr.mouth.curve).toBe(0.5);
+    expect(expr.marks).toHaveLength(1);
+    expect(expr.marks![0].type).toBe("heart");
+    expect(expr.motion.blink).toBe(0.3);
+  });
+
+  it("buildExpression clamps out-of-range values", () => {
+    const expr = buildExpression({
+      tilt: 99,
+      curve: 2,
+      motion: { blink: 5 },
+    });
+    expect(expr.face.tilt).toBe(15);
+    expect(expr.mouth.curve).toBe(1);
+    expect(expr.motion.blink).toBe(1);
+  });
+
+  it("buildExpression limits marks to max", () => {
+    const expr = buildExpression({
+      marks: ["heart", "sweat", "sparkle", "anger", "smoke"],
+    });
+    expect(expr.marks!.length).toBeLessThanOrEqual(AGENT_GUIDANCE.maxMarks);
+  });
+
+  it("buildExpression is deterministic", () => {
+    const a = buildExpression({ eyeShape: "star", mouthShape: "wave" });
+    const b = buildExpression({ eyeShape: "star", mouthShape: "wave" });
+    expect(a).toEqual(b);
+  });
+
+  it("COMMON_AGENT_MISTAKES covers known error categories", () => {
+    expect(COMMON_AGENT_MISTAKES.length).toBeGreaterThanOrEqual(4);
+    for (const entry of COMMON_AGENT_MISTAKES) {
+      expect(entry.mistake.length).toBeGreaterThan(0);
+      expect(entry.repair.length).toBeGreaterThan(0);
+      expect(entry.fix.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("AGENT_GUIDANCE contains safe ranges", () => {
+    expect(AGENT_GUIDANCE.safeTilt.min).toBeDefined();
+    expect(AGENT_GUIDANCE.safeTilt.max).toBeDefined();
+    expect(AGENT_GUIDANCE.maxMarks).toBeGreaterThan(0);
   });
 });

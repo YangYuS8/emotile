@@ -32,6 +32,14 @@ export { repairExpression } from "./repair";
 export { renderExpression } from "./render";
 export { renderPixelFrameToASCII } from "./preview";
 export { mutateExpression } from "./mutate";
+export { tickExpression } from "./tick";
+export {
+  AGENT_GUIDANCE,
+  MINIMAL_EXPRESSION,
+  COMMON_AGENT_MISTAKES,
+  buildExpression,
+} from "./agent";
+export type { BuildExpressionOptions } from "./agent";
 
 export {
   FACE_SHAPES,

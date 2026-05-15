@@ -46,6 +46,8 @@ import {
   repairExpression,
   renderExpression,
   mutateExpression,
+  tickExpression,
+  buildExpression,
 } from "@yangyus8/emotile";
 
 // Validate — check if an expression is structurally valid
@@ -68,6 +70,13 @@ console.log(`${frame.width}x${frame.height}, ${frame.pixels.length} pixels`);
 
 // Mutate — deterministic, seed-based variation
 const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
+
+// Animation tick — apply motion fields deterministically using explicit tick
+const ticked = tickExpression(normalized, 5);
+const animatedFrame = renderExpression(ticked);
+
+// Agent helper — build a valid expression from high-level options
+const expr = buildExpression({ eyeShape: "arc", mouthShape: "smile", curve: 0.5 });
 ```
 
 ## Debug Preview
@@ -106,12 +115,31 @@ frame.pixels.forEach((p) => {
 });
 ```
 
+## Agent Guidance
+
+When generating expressions, AI agents should follow these constraints to minimize repairs:
+
+- Use only valid enum values. Eye shapes: `dot`, `line`, `arc`, `closed`, `cross`, `star`, `hollow`, `spiral`. Mouth shapes: `flat`, `smile`, `sad`, `open`, `wave`, `broken`, `tiny_o`, `hidden`.
+- Keep all coordinates inside `0` to `31`.
+- Keep `face.tilt` between `-15` and `15`, `mouth.curve` between `-1` and `1`.
+- Always include required fields: `version`, `canvas`, `face`, `eyes`, `mouth`.
+- Start from `buildExpression()` or `MINIMAL_EXPRESSION` rather than writing JSON from scratch.
+
+Common mistakes and their automatic repairs:
+
+| Mistake | Repair |
+|---------|--------|
+| Invalid eye/mouth shape | Falls back to `dot` / `flat` |
+| Out-of-range coordinates | Clamped to `[0, 31]` |
+| Missing required fields | Filled with defaults |
+| Out-of-range numbers | Clamped to valid range |
+
 ## Current Limitations
 
 - v0.1 canvas is fixed at 32×32.
 - Renderer produces a pixel list, not PNG/GIF/SVG — downstream consumers must convert.
-- No animation support yet (motion fields are defined but not animated).
-- No theme / color palette support (colors are semantic: `primary`, `accent`, `shadow`).
+- Motion fields are animated via explicit `tickExpression` — there is no built-in timer or loop.
+- No theme / color palette support yet (colors are semantic: `primary`, `accent`, `shadow`).
 - No browser, terminal, or game engine integration yet.
 
 ## Roadmap

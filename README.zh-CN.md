@@ -46,6 +46,8 @@ import {
   repairExpression,
   renderExpression,
   mutateExpression,
+  tickExpression,
+  buildExpression,
 } from "@yangyus8/emotile";
 
 // 校验 — 检查表达式是否结构合法
@@ -68,6 +70,13 @@ console.log(`${frame.width}x${frame.height}, ${frame.pixels.length} 像素`);
 
 // 变异 — 确定性的、基于种子的变化
 const mutated = mutateExpression(normalized, { seed: 42, amount: 0.2 });
+
+// 动画帧 — 使用显式 tick 确定性地应用 motion 字段
+const ticked = tickExpression(normalized, 5);
+const animatedFrame = renderExpression(ticked);
+
+// Agent 辅助函数 — 从高阶选项构建合法表达式
+const expr = buildExpression({ eyeShape: "arc", mouthShape: "smile", curve: 0.5 });
 ```
 
 ## 调试预览
@@ -106,11 +115,30 @@ frame.pixels.forEach((p) => {
 });
 ```
 
+## Agent 生成指导
+
+AI agent 生成表达式时应遵循以下约束，以减少修复：
+
+- 仅使用合法的枚举值。眼睛形状：`dot`、`line`、`arc`、`closed`、`cross`、`star`、`hollow`、`spiral`。嘴巴形状：`flat`、`smile`、`sad`、`open`、`wave`、`broken`、`tiny_o`、`hidden`。
+- 所有坐标保持在 `0` 到 `31` 之间。
+- `face.tilt` 保持在 `-15` 到 `15` 之间，`mouth.curve` 保持在 `-1` 到 `1` 之间。
+- 始终包含必填字段：`version`、`canvas`、`face`、`eyes`、`mouth`。
+- 从 `buildExpression()` 或 `MINIMAL_EXPRESSION` 开始，而非从零手写 JSON。
+
+常见错误及自动修复：
+
+| 错误 | 修复 |
+|---------|--------|
+| 非法眼睛/嘴巴形状 | 回退为 `dot` / `flat` |
+| 超出范围的坐标 | 钳位到 `[0, 31]` |
+| 缺少必填字段 | 填充默认值 |
+| 超出范围的数值 | 钳位到有效范围 |
+
 ## 当前限制
 
 - v0.1 画布固定为 32×32。
 - 渲染器输出像素列表，而非 PNG/GIF/SVG——下游消费者需自行转换。
-- 尚无动画支持（motion 字段已定义但未实现动画）。
+- motion 字段通过显式 `tickExpression` 驱动动画——无内置定时器或循环。
 - 尚无主题/调色板支持（颜色为语义化：`primary`、`accent`、`shadow`）。
 - 尚无浏览器、终端或游戏引擎集成。
 
