@@ -132,6 +132,26 @@ import { getExpressionSchema } from "@yangyus8/emotile";
 const schema = getExpressionSchema();
 ```
 
+## CLI
+
+Install globally or use via `npx`:
+
+```bash
+npx @yangyus8/emotile validate expr.json
+npx @yangyus8/emotile repair expr.json
+npx @yangyus8/emotile preview expr.json
+npx @yangyus8/emotile render svg expr.json
+```
+
+Commands:
+- `validate <file>` — validate expression JSON, exit 0 if valid, 1 if invalid
+- `repair <file>` — repair expression and output JSON to stdout
+- `preview <file>` — render ASCII preview
+- `render svg <file>` — render SVG output
+- `help` — show usage
+
+Exit codes: 0 for success, 1 for invalid input, error, or unknown command.
+
 ## Schema Constants
 
 Exported from `schema`:

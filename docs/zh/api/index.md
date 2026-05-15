@@ -132,6 +132,26 @@ import { getExpressionSchema } from "@yangyus8/emotile";
 const schema = getExpressionSchema();
 ```
 
+## CLI
+
+全局安装或通过 `npx` 使用：
+
+```bash
+npx @yangyus8/emotile validate expr.json
+npx @yangyus8/emotile repair expr.json
+npx @yangyus8/emotile preview expr.json
+npx @yangyus8/emotile render svg expr.json
+```
+
+命令：
+- `validate <file>` —— 校验表达式 JSON，合法退出 0，不合法退出 1
+- `repair <file>` —— 修复表达式并输出 JSON 到 stdout
+- `preview <file>` —— 渲染 ASCII 预览
+- `render svg <file>` —— 渲染 SVG 输出
+- `help` —— 显示用法
+
+退出码：0 成功，1 无效输入、错误或未知命令。
+
 ## 模式常量
 
 从 `schema` 导出：
