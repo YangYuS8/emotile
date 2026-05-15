@@ -30,6 +30,7 @@ export default defineConfig({
           items: [
             { text: 'Roadmap', link: '/roadmap' },
             { text: 'v0.2 Plan', link: '/v0.2-plan' },
+            { text: 'v0.3 Plan', link: '/v0.3-plan' },
             { text: 'Decisions', link: '/decisions' },
             { text: 'Contributing', link: '/contributing' },
             { text: 'Writing Guidelines', link: '/writing-guidelines' },
@@ -51,6 +52,7 @@ export default defineConfig({
           items: [
             { text: '路线图', link: '/zh/roadmap' },
             { text: 'v0.2 计划', link: '/zh/v0.2-plan' },
+            { text: 'v0.3 计划', link: '/zh/v0.3-plan' },
             { text: '决策记录', link: '/zh/decisions' },
             { text: '贡献指南', link: '/zh/contributing' },
             { text: '文档规范', link: '/zh/writing-guidelines' },

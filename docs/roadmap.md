@@ -16,13 +16,25 @@
 - Agent-facing expression helper docs
 - Agent guidance and common mistakes reference
 
+## v0.3 (Planning)
+
+- External theme / palette runtime
+- SVG renderer from `PixelFrame` to SVG string
+- Lightweight CLI for validation, repair, preview, and SVG rendering
+- JSON Schema export for structured agent output
+- Gallery examples that demonstrate composable expressions without becoming a preset catalog
+
 ## Deferred
 
 - Variable canvas sizes (beyond 32×32)
-- Theme and palette runtime implementation
 - ESM / dual-build
-- Browser / Canvas / GPU integration
+- Desktop pet runtime
+- Canvas / browser runtime
+- Visual editor
+- Browser / GPU integration
 - Preset expression catalogs
-- PNG / SVG / GIF export
+- PNG / GIF native export
+- Live2D
+- Large dependencies
 - Terminal renderer (braille/unicode)
 - Game engine integrations
