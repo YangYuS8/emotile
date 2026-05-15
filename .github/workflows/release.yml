@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 0.4.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check package.json version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          INPUT_VERSION="${{ inputs.version }}"
+          if [ "$PKG_VERSION" != "$INPUT_VERSION" ]; then
+            echo "❌ package.json version ($PKG_VERSION) does not match input version ($INPUT_VERSION)"
+            exit 1
+          fi
+          echo "✓ package.json version matches: $PKG_VERSION"
+
+      - name: Check CHANGELOG.md
+        run: node scripts/extract-release-notes.mjs "${{ inputs.version }}" > /dev/null
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Build docs
+        run: pnpm docs:build
+
+      - name: Pack dry-run
+        run: pnpm pack --dry-run
+
+      - name: Extract release notes
+        run: node scripts/extract-release-notes.mjs "${{ inputs.version }}" > release-notes.md
+
+      - name: Publish to npm (OIDC)
+        id: publish-oidc
+        continue-on-error: true
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Publish to npm (NPM_TOKEN fallback)
+        if: steps.publish-oidc.outcome == 'failure'
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+
+      - name: Create git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --notes-file release-notes.md
