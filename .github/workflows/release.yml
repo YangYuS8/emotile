@@ -12,6 +12,10 @@ permissions:
   contents: write
   id-token: write
 
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -47,6 +51,27 @@ jobs:
       - name: Check CHANGELOG.md
         run: node scripts/extract-release-notes.mjs "${{ inputs.version }}" > /dev/null
 
+      - name: Check git tag does not already exist
+        run: |
+          TAG="v${{ inputs.version }}"
+          if git ls-remote --tags origin "refs/tags/$TAG" | grep -q "$TAG"; then
+            echo "❌ Git tag $TAG already exists on remote"
+            exit 1
+          fi
+          echo "✓ Git tag $TAG does not exist"
+
+      - name: Check npm version does not already exist
+        run: |
+          VERSION="${{ inputs.version }}"
+          PKG_NAME=$(node -p "require('./package.json').name")
+          NPM_URL="https://registry.npmjs.org/${PKG_NAME}/${VERSION}"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$NPM_URL")
+          if [ "$STATUS" = "200" ]; then
+            echo "❌ npm version ${PKG_NAME}@${VERSION} already exists"
+            exit 1
+          fi
+          echo "✓ npm version ${PKG_NAME}@${VERSION} does not exist (HTTP $STATUS)"
+
       - name: Type check
         run: pnpm typecheck
 
@@ -61,6 +86,9 @@ jobs:
 
       - name: Pack dry-run
         run: pnpm pack --dry-run
+
+      - name: Release preflight
+        run: pnpm release:preflight
 
       - name: Extract release notes
         run: node scripts/extract-release-notes.mjs "${{ inputs.version }}" > release-notes.md

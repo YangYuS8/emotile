@@ -145,7 +145,7 @@ Release workflow 请求两个权限：
 - `contents: write` — 推送 git tag 和创建 GitHub Release。
 - `id-token: write` — 与 npm 交换短期 OIDC token。
 
-Trusted Publishing 生效后，不再需要 `NPM_TOKEN` secret。
+Trusted Publishing 生效且 workflow 文件名与 trusted publisher 配置匹配时，npm 会自动为已发布包生成 provenance。此时不再需要 `NPM_TOKEN` secret。
 
 ## NPM_TOKEN Fallback
 
@@ -155,7 +155,7 @@ Trusted Publishing 生效后，不再需要 `NPM_TOKEN` secret。
 2. 将其作为名为 `NPM_TOKEN` 的 repository secret 添加。
 3. 如果 OIDC publish 失败，workflow 会自动使用它。
 
-Fallback 路径在 workflow YAML 中清晰分离。早期发布可以使用，但应尽快替换为 Trusted Publishing。
+Fallback 路径在 workflow YAML 中清晰分离。即使在 fallback 模式下，workflow 也会设置 `NPM_CONFIG_PROVENANCE: true` 向 npm 请求 provenance。provenance 是否实际生成取决于 npm 对基于 token 的发布所记录的前提条件和限制（例如，包和账户可能需要满足 npm 的 provenance 资格要求）。Trusted Publishing 仍然是首选路径，因为它使用短期 OIDC 凭据，且更可能自动满足 npm 的 provenance 条件。
 
 ## Release Notes 来源
 

@@ -145,7 +145,7 @@ The release workflow requests two permissions:
 - `contents: write` — to push git tags and create GitHub Releases.
 - `id-token: write` — to exchange a short-lived OIDC token with npm.
 
-No `NPM_TOKEN` secret is required when Trusted Publishing is active.
+When Trusted Publishing is active and the workflow filename matches the trusted publisher configuration, npm automatically generates provenance for the published package. No `NPM_TOKEN` secret is required.
 
 ## NPM_TOKEN Fallback
 
@@ -155,7 +155,7 @@ If Trusted Publishing is not yet configured, the workflow falls back to a classi
 2. Add it as a repository secret named `NPM_TOKEN`.
 3. The workflow will use it if OIDC publish fails.
 
-The fallback path is clearly separated in the workflow YAML. It is acceptable for early releases but should be replaced by Trusted Publishing as soon as practical.
+The fallback path is clearly separated in the workflow YAML. Even in fallback mode, the workflow sets `NPM_CONFIG_PROVENANCE: true`, which requests provenance from npm. Whether provenance is actually generated depends on npm's documented prerequisites and limitations for token-based publishing (for example, the package and account may need to meet npm's provenance eligibility requirements). Trusted Publishing is still preferred because it uses short-lived OIDC credentials and is more likely to meet npm's provenance conditions automatically.
 
 ## Release Notes Source
 
