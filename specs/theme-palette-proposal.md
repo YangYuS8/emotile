@@ -1,6 +1,6 @@
 # Emotile Theme and Palette Support — Design Proposal
 
-> **Status:** Design-only proposal for v0.2. No runtime implementation in this issue.  
+> **Status:** Design-only proposal for v0.2. No runtime implementation in this issue.
 > **Scope:** Compare design options, define semantic color mapping, assess impact, recommend timeline.
 
 ---

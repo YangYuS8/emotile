@@ -665,4 +665,20 @@ describe("agent helpers", () => {
     expect(AGENT_GUIDANCE.safeTilt.max).toBeDefined();
     expect(AGENT_GUIDANCE.maxMarks).toBeGreaterThan(0);
   });
+
+  it("buildExpression falls back invalid enum options to defaults", () => {
+    const expr = buildExpression({
+      eyeShape: "wink" as any,
+      mouthShape: "grin" as any,
+      faceShape: "triangle" as any,
+      marks: ["rainbow"] as any,
+    });
+    const result = validateExpression(expr);
+    expect(result.ok).toBe(true);
+    expect(expr.eyes.left.shape).toBe("dot");
+    expect(expr.mouth.shape).toBe("flat");
+    expect(expr.face.shape).toBe("none");
+    // Invalid mark type filtered out entirely
+    expect(expr.marks).toBeUndefined();
+  });
 });
