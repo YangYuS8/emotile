@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+
+- **External theme / palette runtime** — maps semantic colors to concrete palette values without embedding theme data in the expression schema.
+- **SVG renderer** — converts `PixelFrame` output to deterministic SVG strings with no browser, Canvas, GPU, native, or filesystem dependency.
+- **JSON Schema export** — exposes the current Emotile expression JSON Schema for agent structured output and integration validation.
+- **Lightweight CLI** — adds `emotile validate`, `emotile repair`, `emotile preview`, and `emotile render svg` commands.
+- **Gallery examples** — adds English and Chinese examples covering composable expressions, motion, mutation, theme usage, and SVG output without creating a preset catalog.
+
+### Changed
+
+- README, README.zh-CN, and API docs now describe the v0.3 integration surface.
+- Roadmap docs now mark v0.3 as released.
+
 ## 0.2.0
 
 ### Added

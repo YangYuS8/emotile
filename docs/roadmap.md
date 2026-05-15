@@ -16,7 +16,7 @@
 - Agent-facing expression helper docs
 - Agent guidance and common mistakes reference
 
-## v0.3 (Planning)
+## v0.3 (Released)
 
 - External theme / palette runtime
 - SVG renderer from `PixelFrame` to SVG string

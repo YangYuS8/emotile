@@ -16,7 +16,7 @@
 - 面向 Agent 的表达式辅助文档
 - Agent 生成指导和常见错误参考
 
-## v0.3（规划中）
+## v0.3（已发布）
 
 - 外部主题 / 调色板运行时
 - 从 `PixelFrame` 到 SVG 字符串的 SVG renderer
