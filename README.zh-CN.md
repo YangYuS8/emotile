@@ -6,7 +6,7 @@ Emotile 是一个面向 AI Agent 的像素表情语法与运行时。
 
 运行时负责校验、修复、归一化和渲染，将表达式输出为一个小型像素面孔。
 
-[English](README.md)
+[English](README.md) | [文档站点](https://yangyus8.github.io/emotile/)
 
 ## 为什么不用预定义表情包？
 
