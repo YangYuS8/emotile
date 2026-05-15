@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0
+
+### Added
+
+- **Manual npm and GitHub release workflow** — `.github/workflows/release.yml` triggered by `workflow_dispatch` with required version input, full quality gate, and release notes extracted from `CHANGELOG.md`.
+- **Release preflight checks** — `.github/workflows/release-preflight.yml` runs on PRs and via `workflow_dispatch`. Checks version/changelog consistency, typecheck, test, build, docs:build, pack dry-run, CLI smoke test, and library import smoke test.
+- **Release process documentation** — `docs/release.md` and `docs/zh/release.md` document Architect / Builder role split, release checklist, failure handling, retry rules, npm Trusted Publishing / OIDC setup, and `NPM_TOKEN` fallback.
+- **Agent integration readiness guide** — `docs/guide/agent-integration.md` and `docs/zh/guide/agent-integration.md` show how downstream agents use the JSON Schema and public API pipeline (validate, repair, normalize, render, theme, SVG).
+- **Release workflow hardening** — tag existence check, npm version existence check (read-only), concurrency keyed by input version, and preflight reuse before any publish side effect.
+
+### Changed
+
+- Public docs updated to describe v0.4 release candidate surface.
+- Roadmap and README current stage updated to v0.4.
+- `AGENTS.md` platform independence wording updated from v0.1-specific to project-wide.
+
 ## 0.3.0
 
 ### Added
