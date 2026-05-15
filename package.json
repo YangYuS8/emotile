@@ -26,7 +26,8 @@
     "lint": "tsc --noEmit",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "release:preflight": "node scripts/release-preflight.mjs"
   },
   "keywords": [
     "pixel",
