@@ -18,7 +18,7 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 
 ## Current Stage
 
-**v0.1** — minimal viable library. Validates, normalizes, repairs, renders, and mutates expressions as pure data. No browser, canvas, or GPU dependency.
+**v0.2** — animation tick API, agent helpers, and generation guidance. Validates, normalizes, repairs, renders, mutates, and animates expressions as pure data. No browser, canvas, or GPU dependency.
 
 ## Minimal Expression Example
 
@@ -144,9 +144,9 @@ Common mistakes and their automatic repairs:
 
 ## Roadmap
 
-- **v0.2**: Theme support (color palettes), PNG/SVG export, animation tick.
-- **v0.3**: Terminal renderer (braille/unicode), Godot integration.
-- **v0.4**: Agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
+- **v0.2** (current): Animation tick API, agent helpers and generation guidance, theme/palette design proposal.
+- **v0.3**: Theme/palette runtime support, terminal renderer (braille/unicode), Godot integration.
+- **v0.4**: PNG/SVG export, agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
 - **v1.0**: Stable spec, full animation runtime.
 
 ## License

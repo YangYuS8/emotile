@@ -48,23 +48,11 @@ GitHub workflows for the PR #39 merge commit also passed:
 ## Package Metadata
 
 - Package name remains `@yangyus8/emotile`.
-- `pnpm pack --dry-run` currently reports `@yangyus8/emotile@0.1.0`.
-- `package.json` must be bumped to `0.2.0` before publishing v0.2.0.
-- Release notes or changelog content should be prepared before publishing.
+- `package.json` version bumped to `0.2.0`.
+- Release notes added in `CHANGELOG.md`.
 
 ## Decision
 
-Current `main` is an acceptable v0.2.0 release candidate code baseline, but it is not publish-ready yet. The remaining work is release metadata, documentation consistency, and a final verification pass.
+v0.2.0 release metadata is prepared. The code baseline is verified and documentation is consistent.
 
 Do not publish to npm without explicit user authorization.
-
-## Follow-Up Work
-
-Create one Builder-ready issue for release metadata preparation. It should cover only executable release tasks:
-
-- bump package version to `0.2.0`
-- update release notes / changelog
-- update docs references if needed
-- run `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm docs:build`, and `pnpm pack --dry-run`
-
-Do not create a new runtime feature issue as part of this readiness checkpoint.
