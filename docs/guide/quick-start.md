@@ -56,3 +56,41 @@ const { value, warnings } = repairExpression(malformedInput);
 console.log("Repaired:", value);
 console.log("Warnings:", warnings);
 ```
+
+## SVG Rendering
+
+Export a pixel frame to an SVG string without any browser or canvas dependency:
+
+```ts
+import { renderPixelFrameToSVG, normalizeTheme } from "@yangyus8/emotile";
+
+const theme = normalizeTheme({ primary: "#1a1a2e", accent: "#e94560" });
+const svg = renderPixelFrameToSVG(frame, { theme, pixelSize: 10 });
+console.log(svg);
+```
+
+## Lightweight CLI
+
+If you prefer shell commands over JavaScript imports:
+
+```bash
+# Validate and repair
+emotile repair input.json > safe.json
+
+# ASCII preview
+emotile preview safe.json
+
+# Render SVG
+emotile render svg safe.json > output.svg
+```
+
+## JSON Schema for Structured Generation
+
+Use the exported JSON Schema to constrain LLM structured output:
+
+```ts
+import { getExpressionSchema } from "@yangyus8/emotile";
+
+const schema = getExpressionSchema();
+// Pass schema to your LLM client as a structured-output constraint
+```

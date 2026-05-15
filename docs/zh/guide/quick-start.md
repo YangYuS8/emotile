@@ -56,3 +56,41 @@ const { value, warnings } = repairExpression(malformedInput);
 console.log("修复后:", value);
 console.log("警告:", warnings);
 ```
+
+## SVG 渲染
+
+无需浏览器或 Canvas 即可将像素帧导出为 SVG 字符串：
+
+```ts
+import { renderPixelFrameToSVG, normalizeTheme } from "@yangyus8/emotile";
+
+const theme = normalizeTheme({ primary: "#1a1a2e", accent: "#e94560" });
+const svg = renderPixelFrameToSVG(frame, { theme, pixelSize: 10 });
+console.log(svg);
+```
+
+## 轻量 CLI
+
+如果你更倾向使用 shell 命令而非 JavaScript 导入：
+
+```bash
+# 验证并修复
+emotile repair input.json > safe.json
+
+# ASCII 预览
+emotile preview safe.json
+
+# 渲染 SVG
+emotile render svg safe.json > output.svg
+```
+
+## JSON Schema 结构化生成
+
+使用导出的 JSON Schema 约束 LLM 的结构化输出：
+
+```ts
+import { getExpressionSchema } from "@yangyus8/emotile";
+
+const schema = getExpressionSchema();
+// 将 schema 作为结构化输出约束传递给 LLM 客户端
+```
