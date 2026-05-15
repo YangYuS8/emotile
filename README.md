@@ -48,6 +48,9 @@ import {
   mutateExpression,
   tickExpression,
   buildExpression,
+  applyTheme,
+  renderPixelFrameToSVG,
+  getExpressionSchema,
 } from "@yangyus8/emotile";
 
 // Validate — check if an expression is structurally valid
@@ -77,6 +80,15 @@ const animatedFrame = renderExpression(ticked);
 
 // Agent helper — build a valid expression from high-level options
 const expr = buildExpression({ eyeShape: "arc", mouthShape: "smile", curve: 0.5 });
+
+// Theme — map semantic colors to concrete hex colors
+const themed = applyTheme(frame, { theme: { primary: "#3b82f6", accent: "#f59e0b" } });
+
+// SVG — export as deterministic SVG string
+const svg = renderPixelFrameToSVG(frame, { pixelSize: 20, background: true });
+
+// JSON Schema — for agent structured output
+const schema = getExpressionSchema();
 ```
 
 ## Debug Preview
@@ -134,19 +146,22 @@ Common mistakes and their automatic repairs:
 | Missing required fields | Filled with defaults |
 | Out-of-range numbers | Clamped to valid range |
 
+## Current Stage
+
+**v0.3** — theme-aware output, SVG export, JSON Schema, agent helpers, and animation tick.
+
 ## Current Limitations
 
-- v0.1 canvas is fixed at 32×32.
-- Renderer produces a pixel list, not PNG/GIF/SVG — downstream consumers must convert.
+- Canvas is fixed at 32×32.
+- No PNG/GIF raster export — use SVG or ASCII preview.
 - Motion fields are animated via explicit `tickExpression` — there is no built-in timer or loop.
-- No theme / color palette support yet (colors are semantic: `primary`, `accent`, `shadow`).
 - No browser, terminal, or game engine integration yet.
 
 ## Roadmap
 
-- **v0.2** (current): Animation tick API, agent helpers and generation guidance, theme/palette design proposal.
-- **v0.3**: Theme/palette runtime support, terminal renderer (braille/unicode), Godot integration.
-- **v0.4**: PNG/SVG export, agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
+- **v0.2**: Animation tick API, agent helpers and generation guidance, theme/palette design proposal.
+- **v0.3** (current): External theme/palette runtime, SVG renderer, JSON Schema export, lightweight CLI, gallery examples.
+- **v0.4**: Terminal renderer (braille/unicode), Godot integration, agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
 - **v1.0**: Stable spec, full animation runtime.
 
 ## License

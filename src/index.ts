@@ -24,6 +24,9 @@ export type {
   Pixel,
   PixelFrame,
   MutateOptions,
+  Theme,
+  ThemedPixel,
+  ThemedFrame,
 } from "./types";
 
 export { validateExpression } from "./validate";
@@ -40,6 +43,20 @@ export {
   buildExpression,
 } from "./agent";
 export type { BuildExpressionOptions } from "./agent";
+
+export {
+  DEFAULT_THEME,
+  isValidColor,
+  normalizeTheme,
+  mapPixelColor,
+  applyTheme,
+} from "./theme";
+export type { ApplyThemeOptions } from "./theme";
+
+export { renderPixelFrameToSVG } from "./svg";
+export type { SVGRenderOptions } from "./svg";
+
+export { EMOTILE_EXPRESSION_SCHEMA, getExpressionSchema } from "./json-schema";
 
 export {
   FACE_SHAPES,
