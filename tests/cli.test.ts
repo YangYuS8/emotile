@@ -4,12 +4,14 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
+const CLI_PATH = path.join(__dirname, "../src/cli.ts");
+
 function run(args: string): {
   stdout: string;
   stderr: string;
   exitCode: number;
 } {
-  const result = spawnSync("node", ["dist/cli.js", ...args.split(" ")], {
+  const result = spawnSync("npx", ["tsx", CLI_PATH, ...args.split(" ")], {
     encoding: "utf-8",
     cwd: path.join(__dirname, ".."),
   });
