@@ -117,4 +117,10 @@ describe("CLI", () => {
     const { exitCode } = run(`validate ${file}`);
     expect(exitCode).toBe(1);
   });
+
+  it("exits non-zero for unknown command", () => {
+    const { stderr, exitCode } = run("nope");
+    expect(exitCode).toBe(1);
+    expect(stderr.includes("Unknown command: nope")).toBe(true);
+  });
 });

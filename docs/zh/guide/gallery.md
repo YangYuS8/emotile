@@ -102,6 +102,26 @@ const dark = applyTheme(frame, { theme: { primary: "#e0e0e0", accent: "#ff6b6b",
 const svg = renderPixelFrameToSVG(frame, { theme: dark.theme, background: true, pixelSize: 16 });
 ```
 
+## 变异示例
+
+此表达式使用变异字段创建细微的确定性变化。
+
+```json
+{
+  "version": "0.1",
+  "canvas": { "width": 32, "height": 32 },
+  "face": { "shape": "none", "tilt": 0, "squash": 0 },
+  "eyes": {
+    "left": { "shape": "dot", "x": 10, "y": 12, "size": 3, "openness": 1 },
+    "right": { "shape": "dot", "x": 21, "y": 12, "size": 3, "openness": 1 }
+  },
+  "mouth": { "shape": "smile", "x": 16, "y": 22, "width": 6, "curve": 0.3 },
+  "mutation": { "asymmetry": 0.3, "randomness": 0.2, "glitch": 0 }
+}
+```
+
+使用 `mutateExpression(expr, { seed: 42, amount: 0.3 })` 应用受控变化，同时保持表达式合法且可渲染。
+
 ## 不是预设目录
 
-这些示例通过组合原语展示了可能性。Agent 应通过调整各个字段——眼睛形状、嘴巴形状、位置、运动——来生成表达式，而非从固定列表中选择。这保留了原语系统的完整表达范围。
+这些示例通过组合原语展示了可能性。Agent 应通过调整各个字段——眼睛形状、嘴巴形状、位置、运动、变异——来生成表达式，而非从固定列表中选择。这保留了原语系统的完整表达范围。

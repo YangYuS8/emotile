@@ -146,7 +146,11 @@ function main(): void {
       showHelp();
       break;
     default:
-      showHelp();
+      if (!command) {
+        showHelp();
+      } else {
+        exit(`Unknown command: ${command}`);
+      }
   }
 }
 

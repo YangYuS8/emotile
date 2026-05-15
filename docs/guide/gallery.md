@@ -102,6 +102,26 @@ const dark = applyTheme(frame, { theme: { primary: "#e0e0e0", accent: "#ff6b6b",
 const svg = renderPixelFrameToSVG(frame, { theme: dark.theme, background: true, pixelSize: 16 });
 ```
 
+## Mutation Example
+
+This expression uses mutation fields to create subtle deterministic variation.
+
+```json
+{
+  "version": "0.1",
+  "canvas": { "width": 32, "height": 32 },
+  "face": { "shape": "none", "tilt": 0, "squash": 0 },
+  "eyes": {
+    "left": { "shape": "dot", "x": 10, "y": 12, "size": 3, "openness": 1 },
+    "right": { "shape": "dot", "x": 21, "y": 12, "size": 3, "openness": 1 }
+  },
+  "mouth": { "shape": "smile", "x": 16, "y": 22, "width": 6, "curve": 0.3 },
+  "mutation": { "asymmetry": 0.3, "randomness": 0.2, "glitch": 0 }
+}
+```
+
+Use `mutateExpression(expr, { seed: 42, amount: 0.3 })` to apply controlled variation while keeping the expression valid and renderable.
+
 ## Not a Preset Catalog
 
-These examples are composed from primitives to show what is possible. Agents should generate expressions by adjusting individual fields — eye shape, mouth shape, position, motion — rather than selecting from a fixed list. This preserves the full expressive range of the primitive system.
+These examples are composed from primitives to show what is possible. Agents should generate expressions by adjusting individual fields — eye shape, mouth shape, position, motion, mutation — rather than selecting from a fixed list. This preserves the full expressive range of the primitive system.
