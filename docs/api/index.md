@@ -76,6 +76,62 @@ Key exported types:
 - `ValidationResult<T>` — validation result type
 - `RepairResult` — repair result type
 
+## Theme / Palette
+
+### `applyTheme(frame, options?)`
+
+Maps semantic colors in a `PixelFrame` to concrete hex colors using an external theme. Returns a `ThemedFrame` with `pixels` containing string colors and a resolved `theme` object.
+
+```ts
+import { applyTheme, renderExpression } from "@yangyus8/emotile";
+
+const frame = renderExpression(expr);
+const themed = applyTheme(frame, { theme: { primary: "#3b82f6", accent: "#f59e0b" } });
+```
+
+### `DEFAULT_THEME`
+
+Default palette mapping:
+- `primary`: `#1a1a2e`
+- `accent`: `#e94560`
+- `shadow`: `#533483`
+- `background`: `#ffffff`
+
+### `normalizeTheme(theme?)`
+
+Fills missing palette keys with defaults and falls back invalid hex strings.
+
+## SVG Renderer
+
+### `renderPixelFrameToSVG(frame, options?)`
+
+Converts a `PixelFrame` to a deterministic SVG string. No DOM, Canvas, or browser dependency.
+
+Options:
+- `pixelSize`: pixel size in SVG units (default 10)
+- `theme`: optional custom palette
+- `background`: whether to fill the background (default false)
+- `classPrefix`: CSS class prefix (default `"emotile"`)
+
+```ts
+const svg = renderPixelFrameToSVG(frame, { pixelSize: 20, background: true });
+```
+
+## JSON Schema
+
+### `EMOTILE_EXPRESSION_SCHEMA`
+
+A hand-maintained JSON Schema object describing the current expression format.
+
+### `getExpressionSchema()`
+
+Returns a deep copy of the schema. Use this for agent structured output constraints.
+
+```ts
+import { getExpressionSchema } from "@yangyus8/emotile";
+const schema = getExpressionSchema();
+```
+
 ## Schema Constants
 
 Exported from `schema`:

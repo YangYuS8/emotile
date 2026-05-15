@@ -48,6 +48,9 @@ import {
   mutateExpression,
   tickExpression,
   buildExpression,
+  applyTheme,
+  renderPixelFrameToSVG,
+  getExpressionSchema,
 } from "@yangyus8/emotile";
 
 // 校验 — 检查表达式是否结构合法
@@ -77,6 +80,15 @@ const animatedFrame = renderExpression(ticked);
 
 // Agent 辅助函数 — 从高阶选项构建合法表达式
 const expr = buildExpression({ eyeShape: "arc", mouthShape: "smile", curve: 0.5 });
+
+// 主题 — 将语义颜色映射为具体十六进制颜色
+const themed = applyTheme(frame, { theme: { primary: "#3b82f6", accent: "#f59e0b" } });
+
+// SVG — 导出为确定性 SVG 字符串
+const svg = renderPixelFrameToSVG(frame, { pixelSize: 20, background: true });
+
+// JSON Schema — 用于 Agent 结构化输出
+const schema = getExpressionSchema();
 ```
 
 ## 调试预览
@@ -134,19 +146,22 @@ AI agent 生成表达式时应遵循以下约束，以减少修复：
 | 缺少必填字段 | 填充默认值 |
 | 超出范围的数值 | 钳位到有效范围 |
 
+## 当前阶段
+
+**v0.3** —— 主题感知输出、SVG 导出、JSON Schema、Agent 辅助函数和动画帧驱动。
+
 ## 当前限制
 
-- v0.1 画布固定为 32×32。
-- 渲染器输出像素列表，而非 PNG/GIF/SVG——下游消费者需自行转换。
+- 画布固定为 32×32。
+- 无 PNG/GIF 栅格导出——使用 SVG 或 ASCII 预览。
 - motion 字段通过显式 `tickExpression` 驱动动画——无内置定时器或循环。
-- 尚无主题/调色板支持（颜色为语义化：`primary`、`accent`、`shadow`）。
 - 尚无浏览器、终端或游戏引擎集成。
 
 ## 路线图
 
-- **v0.2**（当前）: 动画帧驱动 API、Agent 辅助函数和生成指导、主题/调色板设计提案。
-- **v0.3**: 主题/调色板运行时支持、终端渲染器（braille/unicode）、Godot 集成。
-- **v0.4**: PNG/SVG 导出、Agent 友好的 prompt schema、OpenClaw/Hermes 集成钩子。
+- **v0.2**: 动画帧驱动 API、Agent 辅助函数和生成指导、主题/调色板设计提案。
+- **v0.3**（当前）: 外部主题/调色板运行时、SVG 渲染器、JSON Schema 导出、轻量 CLI、图库示例。
+- **v0.4**: 终端渲染器（braille/unicode）、Godot 集成、Agent 友好的 prompt schema、OpenClaw/Hermes 集成钩子。
 - **v1.0**: 稳定规范、完整动画运行时。
 
 ## 许可证

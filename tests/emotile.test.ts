@@ -14,6 +14,18 @@ import {
   COMMON_AGENT_MISTAKES,
   buildExpression,
 } from "../src/agent";
+import {
+  DEFAULT_THEME,
+  isValidColor,
+  normalizeTheme,
+  mapPixelColor,
+  applyTheme,
+} from "../src/theme";
+import { renderPixelFrameToSVG } from "../src/svg";
+import {
+  EMOTILE_EXPRESSION_SCHEMA,
+  getExpressionSchema,
+} from "../src/json-schema";
 import type { EmotileExpression } from "../src/types";
 
 const VALID_EXPRESSION: EmotileExpression = {
@@ -680,5 +692,239 @@ describe("agent helpers", () => {
     expect(expr.face.shape).toBe("none");
     // Invalid mark type filtered out entirely
     expect(expr.marks).toBeUndefined();
+  });
+});
+
+describe("theme / palette runtime", () => {
+  const VALID_EXPRESSION: EmotileExpression = {
+    version: "0.1",
+    canvas: { width: 32, height: 32 },
+    face: { shape: "none", tilt: 0, squash: 0 },
+    eyes: {
+      left: { shape: "dot", x: 10, y: 12, size: 3, openness: 1 },
+      right: { shape: "dot", x: 21, y: 12, size: 3, openness: 1 },
+    },
+    mouth: { shape: "flat", x: 16, y: 22, width: 6, curve: 0 },
+    motion: { blink: 0, jitter: 0, breath: 0, shake: 0, glitch: 0 },
+    mutation: { asymmetry: 0, randomness: 0, glitch: 0 },
+  };
+
+  it("DEFAULT_THEME has all semantic colors", () => {
+    expect(DEFAULT_THEME.primary).toBeDefined();
+    expect(DEFAULT_THEME.accent).toBeDefined();
+    expect(DEFAULT_THEME.shadow).toBeDefined();
+    expect(DEFAULT_THEME.background).toBeDefined();
+  });
+
+  it("isValidColor accepts valid hex strings", () => {
+    expect(isValidColor("#fff")).toBe(true);
+    expect(isValidColor("#ffffff")).toBe(true);
+    expect(isValidColor("#FFFFFF")).toBe(true);
+    expect(isValidColor("#ff00ff00")).toBe(true);
+  });
+
+  it("isValidColor rejects invalid strings", () => {
+    expect(isValidColor("red")).toBe(false);
+    expect(isValidColor("#")).toBe(false);
+    expect(isValidColor("#gg")).toBe(false);
+    expect(isValidColor("")).toBe(false);
+  });
+
+  it("normalizeTheme fills missing keys with defaults", () => {
+    const t = normalizeTheme({ primary: "#000000" });
+    expect(t.primary).toBe("#000000");
+    expect(t.accent).toBe(DEFAULT_THEME.accent);
+    expect(t.shadow).toBe(DEFAULT_THEME.shadow);
+    expect(t.background).toBe(DEFAULT_THEME.background);
+  });
+
+  it("normalizeTheme falls back invalid colors to defaults", () => {
+    const t = normalizeTheme({
+      primary: "not-a-color",
+      accent: "#ZZZZZZ",
+    });
+    expect(t.primary).toBe(DEFAULT_THEME.primary);
+    expect(t.accent).toBe(DEFAULT_THEME.accent);
+  });
+
+  it("normalizeTheme lowercases valid hex", () => {
+    const t = normalizeTheme({ primary: "#ABC" });
+    expect(t.primary).toBe("#abc");
+  });
+
+  it("mapPixelColor maps semantic colors correctly", () => {
+    const t = DEFAULT_THEME;
+    expect(mapPixelColor("primary", t)).toBe(t.primary);
+    expect(mapPixelColor("accent", t)).toBe(t.accent);
+    expect(mapPixelColor("shadow", t)).toBe(t.shadow);
+    expect(mapPixelColor("transparent", t)).toBe("transparent");
+  });
+
+  it("applyTheme produces a frame with concrete colors", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const themed = applyTheme(frame, { theme: { primary: "#ff0000" } });
+    expect(themed.width).toBe(frame.width);
+    expect(themed.height).toBe(frame.height);
+    expect(themed.pixels.length).toBe(frame.pixels.length);
+    expect(themed.theme.primary).toBe("#ff0000");
+    // At least one pixel should have the mapped primary color
+    const primaryPixels = themed.pixels.filter((p) => p.color === "#ff0000");
+    expect(primaryPixels.length).toBeGreaterThan(0);
+  });
+
+  it("applyTheme keeps transparent pixels transparent", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const themed = applyTheme(frame);
+    // transparent pixels should not appear in output
+    const transparent = themed.pixels.filter((p) => p.color === "transparent");
+    expect(transparent.length).toBe(0);
+  });
+});
+
+describe("SVG renderer", () => {
+  const VALID_EXPRESSION: EmotileExpression = {
+    version: "0.1",
+    canvas: { width: 32, height: 32 },
+    face: { shape: "none", tilt: 0, squash: 0 },
+    eyes: {
+      left: { shape: "dot", x: 10, y: 12, size: 3, openness: 1 },
+      right: { shape: "dot", x: 21, y: 12, size: 3, openness: 1 },
+    },
+    mouth: { shape: "flat", x: 16, y: 22, width: 6, curve: 0 },
+    motion: { blink: 0, jitter: 0, breath: 0, shake: 0, glitch: 0 },
+    mutation: { asymmetry: 0, randomness: 0, glitch: 0 },
+  };
+
+  it("produces a valid SVG string", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame);
+    expect(svg.startsWith('<?xml version="1.0"')).toBe(true);
+    expect(svg.includes("<svg")).toBe(true);
+    expect(svg.includes("</svg>")).toBe(true);
+  });
+
+  it("is deterministic for same input", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const a = renderPixelFrameToSVG(frame, { pixelSize: 5 });
+    const b = renderPixelFrameToSVG(frame, { pixelSize: 5 });
+    expect(a).toBe(b);
+  });
+
+  it("supports pixel size scaling", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame, { pixelSize: 20 });
+    expect(svg.includes('width="640"')).toBe(true);
+    expect(svg.includes('height="640"')).toBe(true);
+  });
+
+  it("supports custom theme colors", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame, {
+      theme: { primary: "#123456" },
+    });
+    expect(svg.includes("#123456")).toBe(true);
+  });
+
+  it("supports optional background fill", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame, { background: true });
+    expect(svg.includes('class="emotile-bg"')).toBe(true);
+  });
+
+  it("does not include transparent pixels", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame);
+    // transparent pixels should be skipped
+    expect(svg.includes('fill="transparent"')).toBe(false);
+  });
+
+  it("does not contain raw special XML characters in fill attributes", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame);
+    // No raw unescaped ampersands, lt, or gt in fill values
+    const fillMatches = svg.match(/fill="([^"]*)"/g) ?? [];
+    for (const fill of fillMatches) {
+      const value = fill.slice(6, -1); // extract between quotes
+      expect(value.includes("<")).toBe(false);
+      expect(value.includes(">")).toBe(false);
+      // Ampersands should only appear as entity references
+      if (value.includes("&")) {
+        expect(
+          value.includes("&amp;") ||
+            value.includes("&quot;") ||
+            value.includes("&apos;") ||
+            value.includes("&lt;") ||
+            value.includes("&gt;"),
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("handles empty frames", () => {
+    const frame = { width: 4, height: 4, pixels: [] };
+    const svg = renderPixelFrameToSVG(frame);
+    expect(svg.includes('width="40"')).toBe(true);
+    expect(svg.includes('height="40"')).toBe(true);
+    expect(svg.includes("</svg>")).toBe(true);
+  });
+
+  it("supports class prefix option", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame, { classPrefix: "my" });
+    expect(svg.includes('class="my"')).toBe(true);
+  });
+});
+
+describe("JSON Schema export", () => {
+  it("exports a schema object with required top-level fields", () => {
+    expect(EMOTILE_EXPRESSION_SCHEMA.required).toContain("version");
+    expect(EMOTILE_EXPRESSION_SCHEMA.required).toContain("canvas");
+    expect(EMOTILE_EXPRESSION_SCHEMA.required).toContain("face");
+    expect(EMOTILE_EXPRESSION_SCHEMA.required).toContain("eyes");
+    expect(EMOTILE_EXPRESSION_SCHEMA.required).toContain("mouth");
+  });
+
+  it("schema version is const 0.1", () => {
+    expect(EMOTILE_EXPRESSION_SCHEMA.properties.version.const).toBe("0.1");
+  });
+
+  it("schema defines valid eye shapes", () => {
+    const eyeEnum =
+      EMOTILE_EXPRESSION_SCHEMA.definitions.eye.properties.shape.enum;
+    expect(eyeEnum).toContain("dot");
+    expect(eyeEnum).toContain("spiral");
+  });
+
+  it("schema defines valid mouth shapes", () => {
+    const mouthEnum =
+      EMOTILE_EXPRESSION_SCHEMA.properties.mouth.properties.shape.enum;
+    expect(mouthEnum).toContain("flat");
+    expect(mouthEnum).toContain("hidden");
+  });
+
+  it("schema canvas is fixed to 32", () => {
+    expect(
+      EMOTILE_EXPRESSION_SCHEMA.properties.canvas.properties.width.const,
+    ).toBe(32);
+    expect(
+      EMOTILE_EXPRESSION_SCHEMA.properties.canvas.properties.height.const,
+    ).toBe(32);
+  });
+
+  it("getExpressionSchema returns a deep copy", () => {
+    const a = getExpressionSchema();
+    const b = getExpressionSchema();
+    expect(a).toEqual(b);
+    expect(a).not.toBe(b);
+  });
+
+  it("valid expression satisfies schema shape", () => {
+    const expr = buildExpression();
+    // Rough structural check: the expression has all required keys
+    expect(expr.version).toBe("0.1");
+    expect(expr.canvas).toBeDefined();
+    expect(expr.face).toBeDefined();
+    expect(expr.eyes).toBeDefined();
+    expect(expr.mouth).toBeDefined();
   });
 });

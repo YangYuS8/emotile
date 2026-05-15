@@ -154,6 +154,28 @@ export interface PixelFrame {
   pixels: Pixel[];
 }
 
+// --- Theme ---
+
+export interface Theme {
+  primary?: string;
+  accent?: string;
+  shadow?: string;
+  background?: string;
+}
+
+export interface ThemedPixel {
+  x: number;
+  y: number;
+  color: string;
+}
+
+export interface ThemedFrame {
+  width: number;
+  height: number;
+  pixels: ThemedPixel[];
+  theme: Required<Theme>;
+}
+
 // --- Mutate ---
 
 export interface MutateOptions {
