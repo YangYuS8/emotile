@@ -12,7 +12,7 @@
 ### Changed
 
 - README and README.zh-CN updated with new API examples, agent guidance, and current stage description.
-- `docs/roadmap.md` and `docs/zh/roadmap.md` updated to reflect v0.2 as released.
+- `docs/roadmap.md` and `docs/zh/roadmap.md` updated to mark v0.2 as release candidate (not yet published to npm).
 
 ### Fixed
 
