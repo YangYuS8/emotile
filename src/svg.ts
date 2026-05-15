@@ -13,6 +13,18 @@ function escapeXml(text: string): string {
     .replace(/'/g, "&apos;");
 }
 
+/**
+ * Constrain a CSS class prefix to safe characters.
+ * Only allows ASCII letters, digits, hyphens, and underscores.
+ * Falls back to "emotile" if the prefix contains unsafe characters.
+ */
+function safeClassPrefix(prefix: string): string {
+  if (/^[a-zA-Z0-9_-]+$/.test(prefix)) {
+    return prefix;
+  }
+  return "emotile";
+}
+
 export interface SVGRenderOptions {
   /** Pixel size in SVG units (default 10) */
   pixelSize?: number;
@@ -41,7 +53,7 @@ export function renderPixelFrameToSVG(
   const pixelSize = Math.max(1, Math.round(options.pixelSize ?? 10));
   const theme = normalizeTheme(options.theme);
   const showBackground = options.background ?? false;
-  const classPrefix = options.classPrefix ?? "emotile";
+  const classPrefix = safeClassPrefix(options.classPrefix ?? "emotile");
 
   const width = frame.width * pixelSize;
   const height = frame.height * pixelSize;

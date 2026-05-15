@@ -30,10 +30,14 @@ export const DEFAULT_THEME: Required<Theme> = {
 
 /**
  * Validate that a color string looks like a hex color.
- * Accepts #RGB, #RRGGBB, #RGBA, #RRGGBBAA formats.
+ * Accepts #RGB, #RGBA, #RRGGBB, #RRGGBBAA formats only.
+ * Rejects #12345 (5 chars) and #1234567 (7 chars).
  */
 export function isValidColor(color: string): boolean {
-  return /^#[0-9a-fA-F]{3,8}$/.test(color);
+  return (
+    /^#[0-9a-fA-F]{3}([0-9a-fA-F])?$/.test(color) ||
+    /^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(color)
+  );
 }
 
 /**

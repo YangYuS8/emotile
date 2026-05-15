@@ -728,6 +728,9 @@ describe("theme / palette runtime", () => {
     expect(isValidColor("#")).toBe(false);
     expect(isValidColor("#gg")).toBe(false);
     expect(isValidColor("")).toBe(false);
+    // Regression: 5 and 7 char hex lengths are invalid
+    expect(isValidColor("#12345")).toBe(false);
+    expect(isValidColor("#1234567")).toBe(false);
   });
 
   it("normalizeTheme fills missing keys with defaults", () => {
@@ -872,6 +875,18 @@ describe("SVG renderer", () => {
     const frame = renderExpression(VALID_EXPRESSION);
     const svg = renderPixelFrameToSVG(frame, { classPrefix: "my" });
     expect(svg.includes('class="my"')).toBe(true);
+  });
+
+  it("falls back malicious class prefix to safe default", () => {
+    const frame = renderExpression(VALID_EXPRESSION);
+    const svg = renderPixelFrameToSVG(frame, {
+      classPrefix: 'x" onload="alert(1)',
+    });
+    // Malicious prefix must not appear in output
+    expect(svg.includes('x" onload="alert(1)"')).toBe(false);
+    expect(svg.includes("onload=")).toBe(false);
+    // Should fall back to "emotile"
+    expect(svg.includes('class="emotile"')).toBe(true);
   });
 });
 
