@@ -42,7 +42,6 @@
   },
   "homepage": "https://github.com/YangYuS8/emotile#readme",
   "devDependencies": {
-    "tsx": "^4.21.0",
     "typescript": "^5.7.0",
     "vitepress": "^1.6.4",
     "vitest": "^3.0.5"
