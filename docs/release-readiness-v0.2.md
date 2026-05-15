@@ -55,4 +55,4 @@ GitHub workflows for the PR #39 merge commit also passed:
 
 v0.2.0 release metadata is prepared. The code baseline is verified and documentation is consistent.
 
-Do not publish to npm without explicit user authorization.
+The package was published to npm as `@yangyus8/emotile@0.2.0` after explicit user authorization.

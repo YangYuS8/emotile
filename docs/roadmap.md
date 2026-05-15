@@ -9,7 +9,7 @@
 - CommonJS package
 - Fixed 32×32 canvas
 
-## v0.2 (Release Candidate)
+## v0.2 (Released)
 
 - Theme and palette support (design proposal)
 - Pure-data animation tick API
