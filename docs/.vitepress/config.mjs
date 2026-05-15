@@ -12,13 +12,6 @@ export default defineConfig({
       { text: 'API', link: '/api/' },
       { text: 'Roadmap', link: '/roadmap' },
       { text: 'Contributing', link: '/contributing' },
-      {
-        text: 'Languages',
-        items: [
-          { text: 'English', link: '/' },
-          { text: '中文', link: '/zh/' },
-        ],
-      },
     ],
 
     sidebar: {
@@ -95,13 +88,6 @@ export default defineConfig({
           { text: 'API', link: '/zh/api/' },
           { text: '路线图', link: '/zh/roadmap' },
           { text: '贡献指南', link: '/zh/contributing' },
-          {
-            text: '语言',
-            items: [
-              { text: 'English', link: '/' },
-              { text: '中文', link: '/zh/' },
-            ],
-          },
         ],
       },
     },
