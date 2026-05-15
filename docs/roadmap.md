@@ -9,7 +9,7 @@
 - CommonJS package
 - Fixed 32×32 canvas
 
-## v0.2 (In Planning)
+## v0.2 (Release Candidate Prep)
 
 - Theme and palette support (design proposal)
 - Pure-data animation tick API
@@ -18,6 +18,7 @@
 ## Deferred
 
 - Variable canvas sizes (beyond 32×32)
+- Theme and palette runtime implementation
 - ESM / dual-build
 - Browser / Canvas / GPU integration
 - Preset expression catalogs

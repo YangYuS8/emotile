@@ -41,3 +41,17 @@
 - **Context:** Open issues should be Builder-executable tasks.
 - **Consequences:** Issues are actionable; roadmap/decisions live in versioned docs.
 - **Deferred:** None.
+
+## v0.2 Second-Stage Scope
+
+- **Decision:** v0.2.0 ships `tickExpression`, agent helpers/guidance, and the theme/palette design proposal only. Theme/palette runtime support is deferred to v0.3 by default.
+- **Context:** The merged v0.2 work already adds a behavioral API (`tickExpression`) and agent-facing helpers. Adding theme runtime now would expand renderer/schema/API review risk.
+- **Consequences:** No Builder runtime issue should be opened for theme/palette unless a concrete downstream need is identified and the Architect explicitly reopens v0.2 scope.
+- **Deferred alternatives:** Separate palette input, expression-embedded palette, named themes, and concrete color mapping runtime.
+
+## v0.2 Release Readiness Handling
+
+- **Decision:** Release readiness checkpoints are recorded in docs and short-lived issues are closed after the decision is made.
+- **Context:** Release readiness is an Architect decision, not a long-running Builder task.
+- **Consequences:** Any remaining release work must be converted into Builder-executable metadata or verification tasks.
+- **Deferred alternatives:** Keeping release readiness issue #40 open as the release tracker.

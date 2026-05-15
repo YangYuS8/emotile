@@ -41,3 +41,17 @@
 - **背景：** 开放的 issue 应该是 Builder 可执行的任务。
 - **后果：** issue 是可操作的；路线图/决策存在于版本化文档中。
 - **延期：** 无。
+
+## v0.2 第二阶段范围
+
+- **决策：** v0.2.0 只发布 `tickExpression`、Agent helpers / guidance、以及主题 / 调色板设计提案。主题 / 调色板运行时支持默认推迟到 v0.3。
+- **背景：** 已合并的 v0.2 工作已经加入行为 API（`tickExpression`）和面向 Agent 的辅助能力。此时加入主题运行时会扩大 renderer / schema / API 的审查风险。
+- **后果：** 除非出现明确下游需求且 Architect 明确重新打开 v0.2 范围，否则不应创建 theme/palette 的 Builder runtime issue。
+- **延期：** 独立调色板输入、表达式内嵌调色板、命名主题、具体颜色映射运行时。
+
+## v0.2 发布就绪处理方式
+
+- **决策：** 发布就绪 checkpoint 记录在 docs 中，短期 issue 在决策完成后关闭。
+- **背景：** 发布就绪判断是 Architect 决策，不是长期 Builder 任务。
+- **后果：** 剩余发布工作必须转换为 Builder 可执行的 metadata 或验证任务。
+- **延期：** 将 release readiness issue #40 作为长期发布跟踪器保持开放。
