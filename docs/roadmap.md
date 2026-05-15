@@ -24,6 +24,13 @@
 - JSON Schema export for structured agent output
 - Gallery examples that demonstrate composable expressions without becoming a preset catalog
 
+## v0.4 (Planned)
+
+- Manual npm and GitHub release workflow
+- Release preflight checks for PR and manual runs
+- Release process documentation for Architect and Builder roles
+- Agent integration readiness guide using JSON Schema, validation, repair, normalization, rendering, theme, and SVG
+
 ## Deferred
 
 - Variable canvas sizes (beyond 32×32)

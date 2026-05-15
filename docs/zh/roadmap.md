@@ -24,6 +24,13 @@
 - 用于 Agent 结构化输出的 JSON Schema 导出
 - 展示可组合表达式的 gallery examples，但不做预设目录
 
+## v0.4（已规划）
+
+- 手动 npm 和 GitHub release workflow
+- 支持 PR 和手动运行的 release preflight checks
+- 面向 Architect 和 Builder 分工的发布流程文档
+- 基于 JSON Schema、验证、修复、归一化、渲染、主题和 SVG 的 Agent 集成准备指南
+
 ## 延期
 
 - 可变画布尺寸（超出 32×32）
