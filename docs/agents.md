@@ -36,6 +36,6 @@ Before a PR is accepted, it should pass:
 - Prefer composable visual primitives.
 - Agent-facing input must be validated, normalized, and repairable.
 - Renderer changes must not weaken the schema guarantees.
-- Keep v0.1 platform-independent: no browser, Canvas, GPU, window manager, or desktop-pet runtime dependency.
+- Keep platform-independent: no browser, Canvas, GPU, window manager, or desktop-pet runtime dependency.
 
 For the full rules, see [`AGENTS.md`](https://github.com/YangYuS8/emotile/blob/main/AGENTS.md).

@@ -130,4 +130,4 @@ Do not add complete preset expressions like `happy_01`.
 Prefer composable visual primitives.
 Agent-facing input must be validated, normalized, and repairable.
 Renderer changes must not weaken the schema guarantees.
-Keep v0.1 platform-independent: no browser, Canvas, GPU, window manager, or desktop-pet runtime dependency.
+Keep platform-independent: no browser, Canvas, GPU, window manager, or desktop-pet runtime dependency.

@@ -18,7 +18,7 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 
 ## Current Stage
 
-**v0.2** — animation tick API, agent helpers, and generation guidance. Validates, normalizes, repairs, renders, mutates, and animates expressions as pure data. No browser, canvas, or GPU dependency.
+**v0.4 Release Candidate** — release automation, integration readiness, and the complete v0.3 expression surface. Validates, normalizes, repairs, renders, themes, exports SVG, and provides a lightweight CLI. No browser, canvas, or GPU dependency.
 
 ## Minimal Expression Example
 
@@ -146,22 +146,18 @@ Common mistakes and their automatic repairs:
 | Missing required fields | Filled with defaults |
 | Out-of-range numbers | Clamped to valid range |
 
-## Current Stage
-
-**v0.3** — theme-aware output, SVG export, JSON Schema, agent helpers, and animation tick.
-
 ## Current Limitations
 
 - Canvas is fixed at 32×32.
 - No PNG/GIF raster export — use SVG or ASCII preview.
 - Motion fields are animated via explicit `tickExpression` — there is no built-in timer or loop.
-- No browser, terminal, or game engine integration yet.
+- No browser or game engine integration yet.
 
 ## Roadmap
 
 - **v0.2**: Animation tick API, agent helpers and generation guidance, theme/palette design proposal.
-- **v0.3** (current): External theme/palette runtime, SVG renderer, JSON Schema export, lightweight CLI, gallery examples.
-- **v0.4**: Terminal renderer (braille/unicode), Godot integration, agent-friendly prompt schema, OpenClaw/Hermes integration hooks.
+- **v0.3**: External theme/palette runtime, SVG renderer, JSON Schema export, lightweight CLI, gallery examples.
+- **v0.4** (current): Release automation, integration readiness guide, agent integration docs.
 - **v1.0**: Stable spec, full animation runtime.
 
 ## License

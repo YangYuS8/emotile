@@ -12,7 +12,7 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 
 ## Current Stage
 
-**v0.2** — animation tick API, agent helpers, and generation guidance. Validates, normalizes, repairs, renders, mutates, and animates expressions as pure data.
+**v0.4 Release Candidate** — release automation, integration readiness, and the complete v0.3 expression surface.
 
 ## Key Capabilities
 
@@ -24,4 +24,8 @@ Direct pixel control makes validation impossible, produces unrecognizable faces 
 - **Tick** — apply motion fields deterministically using explicit tick input
 - **Build** — construct valid expressions from high-level semantic options
 - **Preview** — ASCII debug output for terminal inspection
-- **Guide** — agent-facing constraints, minimal templates, and common mistakes reference
+- **Theme** — map semantic colors to external palettes without schema changes
+- **SVG Export** — deterministic SVG string output, no browser or canvas needed
+- **CLI** — `validate`, `repair`, `preview`, and `render svg` commands
+- **JSON Schema** — structured output constraint for agent generation
+- **Release Automation** — preflight checks and manual release workflow
